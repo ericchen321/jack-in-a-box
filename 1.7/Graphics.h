@@ -42,8 +42,8 @@
 
 /* Upper boundaries for x and y
  */
-#define DIM_X 800   // TODO: 800 by default
-#define DIM_Y 480  // TODO: 480 by default
+#define DIM_X 800   // 800 by default
+#define DIM_Y 480  // 480 by default
 
 /* Macro to check if a given colour is valid
  */
@@ -77,7 +77,6 @@ void ProgramPalette(int PaletteNumber, int RGB);
  */
 void HLine(int x1, int y1, int length, int Colour);
 
-
 /* This function draw a vertical line, 1 pixel at a time starting at the 
  * x,y coords specified
  */
@@ -109,6 +108,33 @@ int LineAcc(int x1, int y1, int x2, int y2, int Colour);
  * returns true if the figure can be drawn; false otherwise
  */
 int Rectangle(int x_ul, int y_ul, int dx, int dy, int Colour);
+
+/* draw a filled rectangle with no border;
+ * returns true if the figure can be drawn; false otherwise
+ */
+int RectangleFilled(int x_ul, int y_ul, int dx, int dy, int FillColour);
+
+/* draw a filled rectangle with border;
+ * returns true if the figure can be drawn; false otherwise
+ */
+int RectangleFilledWBorder(int x_ul, int y_ul, int dx, int dy, int BorderColour, int FillColour, int BorderWidth);
+
+/* draw a circle with border colour as specified; uses
+ * hardware acceleration.
+ * returns true if the figure can be drawn; false otherwise
+ */
+int Circle(int x_ctr, int y_ctr, int radius, int Colour);
+
+/* draw an arc with the following parameters:
+ * x_ctr and y_ctr - center of the arc
+ * deg1, deg2 - degree of the boundary points, measured in
+ * degree, CCW
+ * Colour - colour of the arc
+ * returns true if the figure can be drawn; false otherwise
+ */
+int Arc(int x_ctr, int y_ctr, int deg1, int deg2, int Colour);
+
+// TODO: may add functions to draw clubs, diamonds, hearts, spades
 
 /* draw a triangle with accelerator, using the three given
  * coordinates;
