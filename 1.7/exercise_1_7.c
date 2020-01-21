@@ -136,7 +136,10 @@ void Line(int x1, int y1, int x2, int y2, int Colour)
 
 int HLineAcc(int x1, int y1, int length, int Colour) {
     /* check if inputs are valid */
-    if (!POINT_POS_IS_VALID(x1, y1)){
+    if (length<1) {
+        return 0;   // does not allow 0-length segments
+    }
+    else if (!POINT_POS_IS_VALID(x1, y1)){
         return 0;
     }
     else if (!POINT_POS_IS_VALID(x1+length, y1)) {
@@ -160,6 +163,9 @@ int HLineAcc(int x1, int y1, int length, int Colour) {
 
 int VLineAcc(int x1, int y1, int length, int Colour) {
     /* check if inputs are valid */
+    if (length<1) {
+        return 0;   // does not allow 0-length segments
+    }
     if (!POINT_POS_IS_VALID(x1, y1)){
         return 0;
     }
@@ -184,7 +190,8 @@ int VLineAcc(int x1, int y1, int length, int Colour) {
 
 int LineAcc(int x1, int y1, int x2, int y2, int Colour){
     /* check if inputs are valid */
-    if (x2-x1<=0 && y2-y1<=0) {
+    if (!POINT_POS_IS_VALID(x1, y1)
+        || !POINT_POS_IS_VALID(x2, y2)) {
         return 0;
     }
     else if (!COLOR_IS_VALID(Colour)) {
@@ -204,6 +211,10 @@ int LineAcc(int x1, int y1, int x2, int y2, int Colour){
 }
 
 int Rectangle(int x_ul, int y_ul, int dx, int dy, int Colour) {
+    /* check if inputs are valid */
+    if (dx<1 || dy<1) {
+        return 0;   // enforce positive dx and dy
+    }
     int x_ur = x_ul + dx;
     int y_ur = y_ul;
     int x_ll = x_ul;
@@ -214,7 +225,7 @@ int Rectangle(int x_ul, int y_ul, int dx, int dy, int Colour) {
         || !POINT_POS_IS_VALID(x_ur, y_ur)
         || !POINT_POS_IS_VALID(x_ll, y_ll)
         || !POINT_POS_IS_VALID(x_lr, y_lr)) {
-            return 0;
+        return 0;
     }
     else if (!COLOR_IS_VALID(Colour)) {
         return 0;
@@ -224,7 +235,7 @@ int Rectangle(int x_ul, int y_ul, int dx, int dy, int Colour) {
         HLineAcc(x_ll, y_ll, dx, Colour);
         VLineAcc(x_ul, y_ul, dy, Colour);
         VLineAcc(x_ur, y_ur, dy, Colour);
-        return 0;
+        return 1;
     }
 }
 
