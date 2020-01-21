@@ -32,6 +32,10 @@
 #define GPS_DivisorLatchLSB (*(volatile unsigned char *)((int)GPS_Offset + (int)&RS232_DivisorLatchLSB))
 #define GPS_DivisorLatchMSB (*(volatile unsigned char *)((int)GPS_Offset + (int)&RS232_DivisorLatchMSB))
 
+#define HEX0_1 (volatile unsigned char *)(0xff200030)
+#define HEX2_3 (volatile unsigned char *)(0xff200040)
+#define HEX4_5 (volatile unsigned char *)(0xff200050)
+
 #include <stdio.h>
 
 typedef struct
@@ -185,8 +189,12 @@ void main()
     {
         Time t;
         getGGA(message);
+        printf("%s", message);
         t = GGAtoTime(message);
         printf("\n%d:%d:%d\n", t.hour, t.minute, t.second);
+        *HEX0_1 = t.second;
+        *HEX2_3 = t.minute;
+        *HEX4_5 = t.hour;
         GPSFlush();
     }
 }
