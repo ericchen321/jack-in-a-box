@@ -42,6 +42,7 @@ module  GraphicsController_Verilog (
 
 	reg signed [15:0] X1, Y1, X2, Y2, Colour, BackGroundColour, Command;			// registers
 	reg signed [15:0] Colour_Latch;									// holds data read from a pixel
+	reg signed [15:0] dx, dy, interchange, error, counter, x, y;	// for the Bresenham alg
 
 	// signals to control/select the registers above
 	reg  	X1_Select_H,
@@ -54,7 +55,7 @@ module  GraphicsController_Verilog (
 	
 	reg CommandWritten_H, ClearCommandWritten_H;						// signals to control that a command request has been logged
 	reg Idle_H, SetBusy_H, ClearBusy_H;									// signals to control status of the graphics chip				
-	
+
 	// Temporary Asynchronous signals that drive the Ram (made synchronous in a register for the state machine)
 	// your Verilog code should drive these signals not the real Sram signals.
 	// These signals are copied to the real Sram signals with each clock
@@ -104,7 +105,13 @@ module  GraphicsController_Verilog (
 	parameter ReadPixel1 = 8'h07;							 	// State for reading a pixel
 	parameter ReadPixel2 = 8'h08;							 	// State for reading a pixel
 	parameter PalletteReProgram = 8'h09;					// State for programming a pallette colour
-	
+	parameter DrawLine1 = 8'h0a;
+	parameter DrawLine2 = 8'h0b;
+	parameter DrawLine3 = 8'h0c;
+	parameter DrawLine4 = 8'h0d;
+	parameter DrawLine5 = 8'h0e;
+	parameter DrawLine6 = 8'h0f;
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Commands values that can be written to command register by CPU to get graphics controller to draw a shape
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,9 +216,12 @@ module  GraphicsController_Verilog (
 				if(LDS_L == 0) 
 					X1[7:0] <= DataInFromCPU[7:0];
 			end
+			else if(CurrentState==DrawHLine) begin
+				X1 <= X1 + 16'h1;
+			end
 		end
 	end
-	
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Y1 process and register update
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +235,9 @@ module  GraphicsController_Verilog (
 					Y1[15:8] <= DataInFromCPU[15:8];	
 				if(LDS_L == 0) 
 					Y1[7:0] <= DataInFromCPU[7:0];
+			end
+			else if(CurrentState==DrawVline) begin
+				Y1 <= Y1 + 16'h1;
 			end
 		end
 	end
@@ -326,6 +339,127 @@ module  GraphicsController_Verilog (
 			Colour_Latch <= Colour_Latch_Data;
 	end		
 	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// registers for the Bresenham Algorithm
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/* dx */
+	always@(posedge Clk) begin
+		if(Reset_L == 0) 
+			dx <= 16'h0;
+		else begin
+			if (CurrentState==DrawLine) begin
+				if (X2 >= X1)
+					dx <= X2 - X1;
+				else
+					dx <= X1 - X2;
+			end
+			else if (CurrentState==DrawLine1) begin
+				if (dy > dx)
+					dx <= dy;
+			end
+		end
+	end
+
+	/* dy */
+	always@(posedge Clk) begin
+		if(Reset_L == 0) 
+			dy <= 16'h0;
+		else begin
+			if (CurrentState==DrawLine) begin
+				if (Y2 >= Y1)
+					dy <= Y2 - Y1;
+				else
+					dy <= Y1 - Y2;
+			end
+			else if (CurrentState==DrawLine1) begin
+				if (dy > dx)
+					dy <= dx;
+			end
+		end
+	end
+
+	/* interchange */
+	always@(posedge Clk) begin
+		if(Reset_L == 0) 
+			interchange <= 16'h0;
+		else begin
+			if (CurrentState==DrawLine1) begin
+				if (dy > dx)
+					interchange <= 16'h1;
+			end
+		end
+	end
+
+	/* error */
+	always@(posedge Clk) begin
+		if(Reset_L == 0)
+			error <= 16'h0;
+		else begin
+			if (CurrentState==DrawLine2)
+				error <= (dy << 1) - dx;
+			else if (CurrentState==DrawLine4)
+				error <= error - (dx << 1);
+			else if (CurrentState==DrawLine6)
+				error <= error + (dy << 1);
+		end
+	end
+
+	/* counter */
+	always@(posedge Clk) begin
+		if(Reset_L == 0)
+			counter <= 16'h1;
+		else begin
+			if (CurrentState==DrawLine6)
+				counter <= counter + 16'h1;
+		end
+	end
+
+	/* x */
+	always@(posedge Clk) begin
+		if(Reset_L == 0)
+			x <= 16'h0;
+		else begin
+			if (CurrentState==DrawLine) begin
+				x <= X1;
+			end
+			else if (CurrentState==DrawLine4 && interchange==16'h1) begin
+				if (X2 < X1)
+					x <= x - 16'h1;
+				else if (X2 > X1)
+					x <= x + 16'h1;
+			end
+			else if (CurrentState==DrawLine6 && interchange==16'h0) begin
+				if (X2 < X1)
+					x <= x - 16'h1;
+				else if (X2 > X1)
+					x <= x + 16'h1;
+			end
+		end
+	end
+
+	/* y */
+	always@(posedge Clk) begin
+		if(Reset_L == 0)
+			y <= 16'h0;
+		else begin
+			if (CurrentState==DrawLine) begin
+				y <= Y1;
+			end
+			else if (CurrentState==DrawLine4 && interchange==16'h0) begin
+				if (Y2 < Y1)
+					y <= y - 16'h1;
+				else if (Y2 > Y1)
+					y <= y + 16'h1;
+			end
+			else if (CurrentState==DrawLine6 && interchange==16'h1) begin
+				if (Y2 < Y1)
+					y <= y - 16'h1;
+				else if (Y2 > Y1)
+					y <= y + 16'h1;
+			end
+		end
+	end
+	
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	State Machine Registers
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -421,7 +555,7 @@ module  GraphicsController_Verilog (
 			else if(Command == Vline) 
 				NextState = DrawVline;
 			else if(Command == ALine) 
-				NextState = ALine;	
+				NextState = DrawLine;	
 				
 			// add other code to process any new commands here e.g. draw a circle if you decide to implement that
 			// or draw a rectangle etc
@@ -520,22 +654,102 @@ module  GraphicsController_Verilog (
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		else if(CurrentState == DrawHLine) begin
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			// TODO in your project
-			NextState = Idle;
+			// TODO: in your project
+			/* draw out current pixel */
+			Sig_AddressOut 	= {Y1[8:0], X1[9:1]};
+			Sig_RW_Out			= 0;
+			if(X1[0] == 1'b0)
+				Sig_UDS_Out_L 	= 0;
+			else
+				Sig_LDS_Out_L 	= 0;
+			/* update next state */
+			if(X1[9:0]==X2[9:0])
+				NextState = Idle;
+			else
+				NextState = DrawHLine;
 		end
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		else if(CurrentState == DrawVline) begin
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
-			// TODO in your project
-			NextState = Idle;
+			// TODO: in your project
+			/* draw out current pixel */
+			Sig_AddressOut 	= {Y1[8:0], X1[9:1]};
+			Sig_RW_Out			= 0;
+			if(X1[0] == 1'b0)
+				Sig_UDS_Out_L 	= 0;
+			else
+				Sig_LDS_Out_L 	= 0;
+			/* update next state */
+			if(Y1[8:0]==Y2[8:0])
+				NextState = Idle;
+			else
+				NextState = DrawVline;
 		end
 			
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		else if(CurrentState == DrawLine) begin
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
-			// TODO in your project
-			NextState = Idle;			
+			// TODO: in your project
+			NextState = DrawLine1;			
+		end
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		else if(CurrentState == DrawLine1) begin
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+			// TODO: in your project
+			NextState = DrawLine2;			
+		end
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		else if(CurrentState == DrawLine2) begin
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+			// TODO: in your project
+			if(counter<=dx)
+				NextState = DrawLine3;
+			else
+				NextState = Idle;			
+		end
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		else if(CurrentState == DrawLine3) begin
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+			// TODO: in your project
+			/* draw out current pixel */
+			Sig_AddressOut 	= {y[8:0], x[9:1]};
+			Sig_RW_Out			= 0;
+			if(x[0] == 1'b0)
+				Sig_UDS_Out_L 	= 0;
+			else
+				Sig_LDS_Out_L 	= 0;
+			if (error >= 0)
+				NextState = DrawLine4;
+			else
+				NextState = Idle;		
+		end
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		else if(CurrentState == DrawLine4) begin
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+			NextState = DrawLine5;		
+		end
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		else if(CurrentState == DrawLine5) begin
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+			if (error >= 0)
+				NextState = DrawLine4;
+			else
+				NextState = DrawLine6;		
+		end
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		else if(CurrentState == DrawLine6) begin
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
+			if (counter <= dx)
+				NextState = DrawLine3;
+			else
+				NextState = Idle;		
 		end
 	end
 endmodule

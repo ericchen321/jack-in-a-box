@@ -42,26 +42,78 @@
 
 /* Upper boundaries for x and y
  */
-#define DIM_X 800
-#define DIM_Y 480
+#define DIM_X 800   // TODO: 800 by default
+#define DIM_Y 480  // TODO: 480 by default
 
 /* Macro to check if a given colour is valid
  */
 #define COLOR_IS_VALID(x)   (x>=0 && x<=255)
 
-/* draw horizontal line with accelerator
+/* Macro to check if a given point is out of bound
+ */
+#define POINT_POS_IS_VALID(x, y) (x>=0 && x<DIM_X && y>=0 && y<DIM_Y)
+
+/*******************************************************************************************
+* This function writes a single pixel to the x,y coords specified using the specified colour
+* Note colour is a byte and represents a palette number (0-255) not a 24 bit RGB value
+********************************************************************************************/
+void WriteAPixel(int x, int y, int Colour);
+
+/*********************************************************************************************
+* This function read a single pixel from the x,y coords specified and returns its colour
+* Note returned colour is a byte and represents a palette number (0-255) not a 24 bit RGB value
+*********************************************************************************************/
+int ReadAPixel(int x, int y);
+
+/**********************************************************************************
+** subroutine to program a hardware (graphics chip) palette number with an RGB value
+** e.g. ProgramPalette(RED, 0x00FF0000) ;
+**
+************************************************************************************/
+void ProgramPalette(int PaletteNumber, int RGB);
+
+/* This function draw a horizontal line, 1 pixel at a time starting at the 
+ *x,y coords specified
+ */
+void HLine(int x1, int y1, int length, int Colour);
+
+
+/* This function draw a vertical line, 1 pixel at a time starting at the 
+ * x,y coords specified
+ */
+void VLine(int x1, int y1, int length, int Colour);
+
+/* Draw a line without accelerator
+ */
+void Line(int x1, int y1, int x2, int y2, int Colour);
+
+/* draw horizontal line with accelerator;
+ * requires non-negative length;
  * return true if line can be drawn; false otherwise
  */
 int HLineAcc(int x1, int y1, int length, int Colour);
 
 /* draw vertical line with accelerator
+ * requires non-negative length;
  * return true if line can be drawn; false otherwise
  */
-void VLineAcc(int x1, int y1, int length, int Colour);
+int VLineAcc(int x1, int y1, int length, int Colour);
 
 /* draw line from & to specified points with accelerator
  * return true if line can be drawn; false otherwise
  */
-void Line(int x1, int y1, int x2, int y2, int Colour);
+int LineAcc(int x1, int y1, int x2, int y2, int Colour);
+
+/* draw a rectangle with accelerator, using the specified
+ * upper-left coordinate and dx, dy;
+ * returns true if the figure can be drawn; false otherwise
+ */
+int Rectangle(int x_ul, int y_ul, int dx, int dy, int Colour);
+
+/* draw a triangle with accelerator, using the three given
+ * coordinates;
+ * returns true if the figure can be drawn; false otherwise
+ */
+int Triangle(int x1, int y1, int x2, int y2, int x3, int y3, int Colour);
 
 #endif /* GRAPHICS_H_ */

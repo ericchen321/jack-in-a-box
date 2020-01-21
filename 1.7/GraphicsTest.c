@@ -130,6 +130,7 @@ int sign(int a)
 
 void Line(int x1, int y1, int x2, int y2, int Colour)
 {
+    // DrawLine: init x, y; get dx and dy
     int x = x1;
     int y = y1;
     int dx = abs(x2 - x1);
@@ -148,7 +149,7 @@ void Line(int x1, int y1, int x2, int y2, int Colour)
     else    {
 
 // swap delta x and delta y depending upon slop of line
-
+// DrawLine1: swap and set interchange
         if(dy > dx) {
             temp = dx ;
             dx = dy ;
@@ -157,22 +158,25 @@ void Line(int x1, int y1, int x2, int y2, int Colour)
         }
 
 // initialise the error term to compensate for non-zero intercept
-
+// DrawLine2: set error
         error = (dy << 1) - dx ;    // error = (2 * dy) - dx
 
 // main loop
         for(i = 1; i <= dx; i++)    {
+            // DrawLine3: write pixel
             WriteAPixel(x, y, Colour);
 
             while(error >= 0)   {
+                // DrawLine4: set error, x, y in the loop
                 if(interchange == 1)
                     x += s1 ;
                 else
                     y += s2 ;
 
                 error -= (dx << 1) ;    // error = error - (dx * 2)
+                // DrawLine5: decides if should go to DrawLine 4 or 6
             }
-
+            // DrawLine6: set x, y, error
             if(interchange == 1)
                 y += s2 ;
             else

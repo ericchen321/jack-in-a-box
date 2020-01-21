@@ -1,5 +1,5 @@
 Assembler report for CPEN391_Project
-Sun Jan 19 21:49:51 2020
+Mon Jan 20 23:25:54 2020
 Quartus II 64-Bit Version 15.0.2 Build 153 07/15/2015 SJ Web Edition
 
 
@@ -39,7 +39,7 @@ agreement for further details.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Sun Jan 19 21:49:51 2020 ;
+; Assembler Status      ; Successful - Mon Jan 20 23:25:54 2020 ;
 ; Revision Name         ; CPEN391_Project                       ;
 ; Top-level Entity Name ; MyComputer_Verilog                    ;
 ; Family                ; Cyclone V                             ;
@@ -79,8 +79,8 @@ agreement for further details.
 ; Option         ; Setting                                                            ;
 +----------------+--------------------------------------------------------------------+
 ; Device         ; 5CSEMA5F31C6                                                       ;
-; JTAG usercode  ; 0x098B1CB4                                                         ;
-; Checksum       ; 0x098B1CB4                                                         ;
+; JTAG usercode  ; 0x098F6364                                                         ;
+; Checksum       ; 0x098F6364                                                         ;
 +----------------+--------------------------------------------------------------------+
 
 
@@ -90,16 +90,14 @@ agreement for further details.
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit Assembler
     Info: Version 15.0.2 Build 153 07/15/2015 SJ Web Edition
-    Info: Processing started: Sun Jan 19 21:49:10 2020
+    Info: Processing started: Mon Jan 20 23:25:05 2020
 Info: Command: quartus_asm --read_settings_files=off --write_settings_files=off CPEN391_Project -c CPEN391_Project
 Info (115030): Assembler is generating device programming files
-Warning (11713): The configuration of the Hard Processor Subsystem (HPS) within this design has changed.
-The Preloader software that initializes the HPS requires an update.
-Using hps_isw_handoff/CPEN391_Computer_ARM_A9_HPS/, run the Preloader Support Package Generator to update your Preloader software
-Info: Quartus II 64-Bit Assembler was successful. 0 errors, 1 warning
-    Info: Peak virtual memory: 5103 megabytes
-    Info: Processing ended: Sun Jan 19 21:49:52 2020
-    Info: Elapsed time: 00:00:42
-    Info: Total CPU time (on all processors): 00:00:36
+Info (11878): Hard Processor Subsystem configuration has not changed and a Preloader software update is not required
+Info: Quartus II 64-Bit Assembler was successful. 0 errors, 0 warnings
+    Info: Peak virtual memory: 5102 megabytes
+    Info: Processing ended: Mon Jan 20 23:25:55 2020
+    Info: Elapsed time: 00:00:50
+    Info: Total CPU time (on all processors): 00:00:44
 
 
