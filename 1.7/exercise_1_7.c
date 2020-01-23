@@ -3,7 +3,7 @@
  * 
  */
 
-#include "Graphics.h"
+#include "graphics.h"
 #include <stdio.h>
 
 void WriteAPixel(int x, int y, int Colour)
@@ -188,6 +188,14 @@ int VLineAcc(int x1, int y1, int length, int Colour) {
     }
 }
 
+void FillScreen(int Colour) {
+    int i;
+    for (i=0; i<DIM_Y; i++) {
+        HLineAcc(0, i, DIM_X-1, Colour);
+    }
+    return;
+}
+
 int LineAcc(int x1, int y1, int x2, int y2, int Colour){
     /* check if inputs are valid */
     if (!POINT_POS_IS_VALID(x1, y1)
@@ -239,15 +247,109 @@ int Rectangle(int x_ul, int y_ul, int dx, int dy, int Colour) {
     }
 }
 
+int RectangleFilled(int x_ul, int y_ul, int dx, int dy, int FillColour) {
+    /* check if inputs are valid */
+    if (dx<1 || dy<1) {
+        return 0;   // enforce positive dx and dy
+    }
+    int x_ur = x_ul + dx;
+    int y_ur = y_ul;
+    int x_ll = x_ul;
+    int y_ll = y_ul + dy;
+    int x_lr = x_ul + dx;
+    int y_lr = y_ul + dy;
+    if (!POINT_POS_IS_VALID(x_ul, y_ul)
+        || !POINT_POS_IS_VALID(x_ur, y_ur)
+        || !POINT_POS_IS_VALID(x_ll, y_ll)
+        || !POINT_POS_IS_VALID(x_lr, y_lr)) {
+        return 0;
+    }
+    else if (!COLOR_IS_VALID(FillColour)) {
+        return 0;
+    }
+    else {
+        int i;
+        for (i=0; i<dy; i++) {
+            HLineAcc(x_ul, y_ul+i, dx, FillColour);
+        }
+        return 1;
+    }
+}
+
+int RectangleFilledWBorder(int x_ul, int y_ul, int dx, int dy, int BorderColour, int FillColour, int BorderWidth) {
+    /* check if inputs are valid */
+    if (dx<1 || dy<1) {
+        return 0;   // enforce positive dx and dy
+    }
+    int x_ur = x_ul + dx;
+    int y_ur = y_ul;
+    int x_ll = x_ul;
+    int y_ll = y_ul + dy;
+    int x_lr = x_ul + dx;
+    int y_lr = y_ul + dy;
+    if (!POINT_POS_IS_VALID(x_ul, y_ul)
+        || !POINT_POS_IS_VALID(x_ur, y_ur)
+        || !POINT_POS_IS_VALID(x_ll, y_ll)
+        || !POINT_POS_IS_VALID(x_lr, y_lr)) {
+        return 0;
+    }
+    else if (dx<=2*BorderWidth) {
+        return 0;
+    }
+    else if (!COLOR_IS_VALID(FillColour) || !COLOR_IS_VALID(BorderColour)) {
+        return 0;
+    }
+    else {
+        int i;
+        for (i=0; i<BorderWidth; i++) {
+            HLineAcc(x_ul, y_ul+i, dx, BorderColour);
+            HLineAcc(x_ll, y_ll-i, dx, BorderColour);
+            VLineAcc(x_ul+i, y_ul, dy, BorderColour);
+            VLineAcc(x_ur-i, y_ur, dy, BorderColour);
+        }
+        for (i=0; i<=dy-2*BorderWidth; i++) {
+            HLineAcc(x_ul+BorderWidth, y_ul+BorderWidth+i, dx-2*BorderWidth, FillColour);
+        }      
+        return 1;
+    }
+}
+
+
+int Triangle(int x1, int y1, int x2, int y2, int x3, int y3, int Colour) {
+    if (!POINT_POS_IS_VALID(x1, y1)
+        || !POINT_POS_IS_VALID(x2, y2)
+        || !POINT_POS_IS_VALID(x3, y3)) {
+        return 0;
+    }
+    else if (!COLOR_IS_VALID(Colour)) {
+        return 0;
+    }
+    else {
+        LineAcc(x1, y1, x2, y2, Colour);
+        LineAcc(x2, y2, x3, y3, Colour);
+        LineAcc(x3, y3, x1, y1, Colour);
+        return 1;
+    }
+}
+
 void main() {
-    int hline_ret = HLineAcc(100, 100, 100, YELLOW);
+    FillScreen(DARK_OLIVE_GREEN);
+    int hline_ret = HLineAcc(100, 477, 690, YELLOW);
     printf("drawing horizontal line returns %d\n", hline_ret);
-    int vline_ret = VLineAcc(150, 150, 150, TEAL);
+    int vline_ret = VLineAcc(790, 101, 150, TEAL);
     printf("drawing vertical line returns %d\n", vline_ret);
     int line_ret = LineAcc(100, 100, 150, 150, RED);
     printf("drawing line returns %d\n", line_ret);
-    int rectangle_ret = Rectangle(250, 250, 100, 100, GREEN);
+    line_ret = LineAcc(150, 300, 750, 450, PINK);
+    printf("drawing line returns %d\n", line_ret);
+    int rectangle_ret = Rectangle(250, 250, 100, 100, BLUE);
     printf("drawing rectangle returns %d\n", rectangle_ret);
+    int triangle_ret = Triangle(251, 251, 311, 192, 304, 471, ORANGE);
+    printf("drawing triangle returns %d\n", triangle_ret);
+    int rectangle_filled_ret = RectangleFilled(361, 361, 92, 92, PURPLE);
+    printf("drawing filled rectangle returns %d\n", rectangle_filled_ret);
+    int rectangle_filled_w_border_ret = RectangleFilledWBorder(505, 200, 121, 121, BLACK, RED, 9);
+    printf("drawing filled rectangle with border returns %d\n", rectangle_filled_w_border_ret);
 }
 
 

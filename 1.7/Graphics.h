@@ -119,6 +119,12 @@ int RectangleFilled(int x_ul, int y_ul, int dx, int dy, int FillColour);
  */
 int RectangleFilledWBorder(int x_ul, int y_ul, int dx, int dy, int BorderColour, int FillColour, int BorderWidth);
 
+/* draw a triangle with accelerator, using the three given
+ * coordinates;
+ * returns true if the figure can be drawn; false otherwise
+ */
+int Triangle(int x1, int y1, int x2, int y2, int x3, int y3, int Colour);
+
 /* draw a circle with border colour as specified; uses
  * hardware acceleration.
  * returns true if the figure can be drawn; false otherwise
@@ -135,11 +141,5 @@ int Circle(int x_ctr, int y_ctr, int radius, int Colour);
 int Arc(int x_ctr, int y_ctr, int deg1, int deg2, int Colour);
 
 // TODO: may add functions to draw clubs, diamonds, hearts, spades
-
-/* draw a triangle with accelerator, using the three given
- * coordinates;
- * returns true if the figure can be drawn; false otherwise
- */
-int Triangle(int x1, int y1, int x2, int y2, int x3, int y3, int Colour);
 
 #endif /* GRAPHICS_H_ */

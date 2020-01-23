@@ -347,7 +347,9 @@ module  GraphicsController_Verilog (
 		if(Reset_L == 0) 
 			dx <= 16'h0;
 		else begin
-			if (CurrentState==DrawLine) begin
+			if (CurrentState==Idle)
+				dx <= 16'h0;
+			else if (CurrentState==DrawLine) begin
 				if (X2 >= X1)
 					dx <= X2 - X1;
 				else
@@ -365,7 +367,9 @@ module  GraphicsController_Verilog (
 		if(Reset_L == 0) 
 			dy <= 16'h0;
 		else begin
-			if (CurrentState==DrawLine) begin
+			if (CurrentState==Idle)
+				dy <= 16'h0;
+			else if (CurrentState==DrawLine) begin
 				if (Y2 >= Y1)
 					dy <= Y2 - Y1;
 				else
@@ -383,7 +387,9 @@ module  GraphicsController_Verilog (
 		if(Reset_L == 0) 
 			interchange <= 16'h0;
 		else begin
-			if (CurrentState==DrawLine1) begin
+			if (CurrentState==Idle)
+				interchange <= 16'h0;
+			else if (CurrentState==DrawLine1) begin
 				if (dy > dx)
 					interchange <= 16'h1;
 			end
@@ -395,7 +401,9 @@ module  GraphicsController_Verilog (
 		if(Reset_L == 0)
 			error <= 16'h0;
 		else begin
-			if (CurrentState==DrawLine2)
+			if (CurrentState==Idle)
+				error <= 16'h0;
+			else if (CurrentState==DrawLine2)
 				error <= (dy << 1) - dx;
 			else if (CurrentState==DrawLine4)
 				error <= error - (dx << 1);
@@ -409,7 +417,9 @@ module  GraphicsController_Verilog (
 		if(Reset_L == 0)
 			counter <= 16'h1;
 		else begin
-			if (CurrentState==DrawLine6)
+			if (CurrentState==Idle)
+				counter <= 16'h1;
+			else if (CurrentState==DrawLine6)
 				counter <= counter + 16'h1;
 		end
 	end
@@ -419,7 +429,9 @@ module  GraphicsController_Verilog (
 		if(Reset_L == 0)
 			x <= 16'h0;
 		else begin
-			if (CurrentState==DrawLine) begin
+			if (CurrentState==Idle)
+				x <= 16'h0;
+			else if (CurrentState==DrawLine) begin
 				x <= X1;
 			end
 			else if (CurrentState==DrawLine4 && interchange==16'h1) begin
@@ -442,7 +454,9 @@ module  GraphicsController_Verilog (
 		if(Reset_L == 0)
 			y <= 16'h0;
 		else begin
-			if (CurrentState==DrawLine) begin
+			if (CurrentState==Idle)
+				y <= 16'h0;
+			else if (CurrentState==DrawLine) begin
 				y <= Y1;
 			end
 			else if (CurrentState==DrawLine4 && interchange==16'h0) begin
@@ -725,7 +739,7 @@ module  GraphicsController_Verilog (
 			if (error >= 0)
 				NextState = DrawLine4;
 			else
-				NextState = Idle;		
+				NextState = DrawLine6;		
 		end
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -96,6 +96,7 @@ module tb_GraphicsController_Verilog();
         UDS_L = 0;
         LDS_L = 0;
 
+        // draw a line from (100, 100) to (150, 150)
         AddressIn[7:1] = 7'b0000_001;
         DataInFromCPU = 100;
         AS_L = 0;
@@ -119,6 +120,50 @@ module tb_GraphicsController_Verilog();
 
         AddressIn[7:1] = 7'b0000_100;
         DataInFromCPU = 150;
+        AS_L = 0;
+        #20;
+        AS_L = 1;
+        #20;
+
+        AddressIn[7:1] = 7'b0000_111;
+        DataInFromCPU = 2; // RED
+        AS_L = 0;
+        #20;
+        AS_L = 1;
+        #20;
+
+        AddressIn[7:1] = 7'b0000_000;
+        DataInFromCPU = ALine;
+        AS_L = 0;
+        #20;
+        AS_L = 1;
+        #40;
+        wait(dut.CurrentState==Idle);
+        #20;
+        // draw another line from (150, 300) to (750, 450)
+        AddressIn[7:1] = 7'b0000_001;
+        DataInFromCPU = 150;
+        AS_L = 0;
+        #20;
+        AS_L = 1;
+        #20;
+
+        AddressIn[7:1] = 7'b0000_010;
+        DataInFromCPU = 300;
+        AS_L = 0;
+        #20;
+        AS_L = 1;
+        #20;
+
+        AddressIn[7:1] = 7'b0000_011;
+        DataInFromCPU = 750;
+        AS_L = 0;
+        #20;
+        AS_L = 1;
+        #20;
+
+        AddressIn[7:1] = 7'b0000_100;
+        DataInFromCPU = 450;
         AS_L = 0;
         #20;
         AS_L = 1;
