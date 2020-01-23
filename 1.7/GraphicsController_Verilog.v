@@ -105,12 +105,16 @@ module  GraphicsController_Verilog (
 	parameter ReadPixel1 = 8'h07;							 	// State for reading a pixel
 	parameter ReadPixel2 = 8'h08;							 	// State for reading a pixel
 	parameter PalletteReProgram = 8'h09;					// State for programming a pallette colour
+	/* states for Bresenham line drawing algorithm */
 	parameter DrawLine1 = 8'h0a;
 	parameter DrawLine2 = 8'h0b;
 	parameter DrawLine3 = 8'h0c;
 	parameter DrawLine4 = 8'h0d;
 	parameter DrawLine5 = 8'h0e;
 	parameter DrawLine6 = 8'h0f;
+	/* states for Bresenham arc drawing algorithm */
+	parameter DrawArc = 8'h10;
+	// TODO: may need more states
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Commands values that can be written to command register by CPU to get graphics controller to draw a shape
@@ -119,6 +123,7 @@ module  GraphicsController_Verilog (
 	parameter Hline = 16'h0001;							 	// command is draw Horizontal line
 	parameter Vline = 16'h0002;								// command is draw Vertical line
 	parameter ALine = 16'h0003;								// command is draw any line
+	parameter Arc = 16'h0004;								// command is draw an arc
 	parameter PutPixel = 16'h000a;							// command to draw a pixel
 	parameter GetPixel = 16'h000b;							// command to read a pixel
 	parameter ProgramPallette = 16'h0010;					// command is program one of the 256 pallettes with a new RGB value
@@ -570,10 +575,11 @@ module  GraphicsController_Verilog (
 				NextState = DrawVline;
 			else if(Command == ALine) 
 				NextState = DrawLine;	
-				
 			// add other code to process any new commands here e.g. draw a circle if you decide to implement that
 			// or draw a rectangle etc
-					
+			else if(Command == Arc)
+				NextState = DrawArc;
+
 		end
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		else if(CurrentState == PalletteReProgram) begin
@@ -764,6 +770,12 @@ module  GraphicsController_Verilog (
 				NextState = DrawLine3;
 			else
 				NextState = Idle;		
+		end
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		else if(CurrentState == DrawArc) begin
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// TODO: stub
+			NextState = Idle;
 		end
 	end
 endmodule

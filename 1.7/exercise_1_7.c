@@ -314,7 +314,6 @@ int RectangleFilledWBorder(int x_ul, int y_ul, int dx, int dy, int BorderColour,
     }
 }
 
-
 int Triangle(int x1, int y1, int x2, int y2, int x3, int y3, int Colour) {
     if (!POINT_POS_IS_VALID(x1, y1)
         || !POINT_POS_IS_VALID(x2, y2)
@@ -330,6 +329,18 @@ int Triangle(int x1, int y1, int x2, int y2, int x3, int y3, int Colour) {
         LineAcc(x3, y3, x1, y1, Colour);
         return 1;
     }
+}
+
+void Arc(int x_ctr, int y_ctr, int deg1, int deg2, int Colour) {
+    // TODO: may require changes later on
+    WAIT_FOR_GRAPHICS;				// is graphics ready for new command
+	GraphicsX1Reg = x_ctr;				// write coords to x1, y1
+	GraphicsY1Reg = y_ctr;
+    GraphicsX2Reg = deg1;
+    GraphicsY2Reg = deg2;
+    GraphicsColourReg = Colour;			// set pixel colour
+    GraphicsCommandReg = DrawArc;
+    return;
 }
 
 void main() {

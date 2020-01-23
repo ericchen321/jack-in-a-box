@@ -35,7 +35,8 @@
 // Note DrawHLine, DrawVLine and DrawLine at the moment do nothing - you will modify these
 #define DrawHLine		1
 #define DrawVLine		2
-#define DrawLine			3
+#define DrawLine		3
+#define DrawArc         4
 #define	PutAPixel		0xA
 #define	GetAPixel		0xB
 #define	ProgramPaletteColour    0x10
@@ -98,6 +99,11 @@ int HLineAcc(int x1, int y1, int length, int Colour);
  */
 int VLineAcc(int x1, int y1, int length, int Colour);
 
+/* fills the entire screen with one colour;
+ * requires valid colour input
+ */
+void FillScreen(int Colour);
+
 /* draw line from & to specified points with accelerator
  * return true if line can be drawn; false otherwise
  */
@@ -127,18 +133,18 @@ int Triangle(int x1, int y1, int x2, int y2, int x3, int y3, int Colour);
 
 /* draw a circle with border colour as specified; uses
  * hardware acceleration.
- * returns true if the figure can be drawn; false otherwise
+ * the function allows an incomplete circle to be drawn
  */
-int Circle(int x_ctr, int y_ctr, int radius, int Colour);
+void Circle(int x_ctr, int y_ctr, int radius, int Colour);
 
 /* draw an arc with the following parameters:
  * x_ctr and y_ctr - center of the arc
  * deg1, deg2 - degree of the boundary points, measured in
  * degree, CCW
  * Colour - colour of the arc
- * returns true if the figure can be drawn; false otherwise
+ * the function allows an incomplete arc to be drawn
  */
-int Arc(int x_ctr, int y_ctr, int deg1, int deg2, int Colour);
+void Arc(int x_ctr, int y_ctr, int deg1, int deg2, int Colour);
 
 // TODO: may add functions to draw clubs, diamonds, hearts, spades
 
