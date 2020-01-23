@@ -32,48 +32,16 @@
 #define GPS_DivisorLatchLSB (*(volatile unsigned char *)((int)GPS_Offset + (int)&RS232_DivisorLatchLSB))
 #define GPS_DivisorLatchMSB (*(volatile unsigned char *)((int)GPS_Offset + (int)&RS232_DivisorLatchMSB))
 
+#define HEX0_1 (volatile unsigned char *)(0xff200030)
+#define HEX2_3 (volatile unsigned char *)(0xff200040)
+#define HEX4_5 (volatile unsigned char *)(0xff200050)
+
 #include <stdio.h>
 
-void Init_RS232(void)
+typedef struct
 {
-    RS232_LineControlReg = 0b10000000;
-    RS232_DivisorLatchLSB = 0x58;
-    RS232_DivisorLatchMSB = 0x14;
-    RS232_LineControlReg = 0b00110011;
-    RS232_FifoControlReg = 0b110;
-    RS232_FifoControlReg = 0;
-}
-
-int putcharRS232(int c)
-{
-    while (((RS232_LineStatusReg >> 5) & 1) == 0)
-    {
-    }
-    RS232_TransmitterFifo = c;
-    return c;
-}
-
-int getcharRS232(void)
-{
-    while ((RS232_LineStatusReg & 1) == 0)
-    {
-    }
-    return RS232_ReceiverFifo;
-}
-
-int RS232TestForReceivedData(void) { return (RS232_LineStatusReg & 1); }
-
-void RS232Flush(void)
-{
-    volatile int dummy = 0;
-    while (RS232_LineStatusReg & 1)
-    {
-        dummy += RS232_ReceiverFifo;
-    }
-    return;
-}
-
-// GPS methods
+    int hour, minute, second;
+} Time;
 
 /* helper to send a char to GPS
  */
@@ -115,6 +83,18 @@ int GPSTestForReceivedData(void)
     return (GPS_LineStatusReg & 1);
 }
 
+/* 
+ * helper for waiting for a message 
+ */
+void WaitForMessage()
+{
+    GPSFlush();
+    while (!GPSTestForReceivedData())
+    {
+        printf("\nWaiting for GPS data...\n");
+    }
+}
+
 /* Init for the serial port to communicate with the GPS
  */
 void Init_GPS(void)
@@ -129,27 +109,65 @@ void Init_GPS(void)
 
 /* Checks for data from the GPS
  */
-int GPSReadMessage(char *message)
+void GPSReadMessage(char *message)
 {
 
-    if (!GPSTestForReceivedData())
-    {
-        return 0;
-    }
-
-    // Assemble the bytes into a string
+    // GGA string will be roughly 70 characters so overcompensating a bit
+    int length = 100;
     int i;
-    for (i = 0; i < 280; i++)
+    for (i = 0; i < length; i++)
     {
         unsigned char byte = getcharGPS();
-
         message[i] = byte;
-
-        // printf("%c", message[i]);
     }
+    message[length] = '\0';
+}
 
-    GPSFlush();
-    return 1;
+/* 
+ * Helper to parse out the GGA string
+ */
+void ParseGGA(char *message)
+{
+    int j = 0;
+    while (message[j] != '\n')
+    {
+        j++;
+    }
+    message[j] = '\0';
+}
+
+/* 
+ * Helper function get the GGA string
+ */
+void getGGA(char *message)
+{
+    // Fetch Message
+    GPSReadMessage(message);
+
+    // Parse the string to only grab GGA because that's all we want
+    ParseGGA(message);
+}
+
+/*
+ * Helper function to extra time from GGA string
+ */
+Time GGAtoTime(char *message) {
+    int i = 0;
+    while (message[i] != ',') {
+        i++;
+    }
+    i += 1;
+
+    Time t;
+    t.hour = ((message[i] - '0') * 10) + (message[i + 1] - '0');
+    i += 2;
+    
+    t.minute = ((message[i] - '0') * 10) + (message[i + 1] - '0');
+    i += 2;
+
+    t.second  = ((message[i] - '0') * 10) + (message[i + 1] - '0');
+    
+    return t;
 }
 
 void main()
@@ -163,17 +181,20 @@ void main()
 
     printf("Attempting to read from GPS...\n");
 
-    char message[280];
+    // Message buffer
+    char message[500];
 
     int i;
-    for (i = 0; i < 100; i++) {
-        if (GPSReadMessage(message))
-        {
-            printf("\n%s\n", message);
-        }
-        else {
-            printf("No message available.\n");
-        }
+    for (i = 0; i < 100; i++)
+    {
+        Time t;
+        getGGA(message);
+        printf("%s", message);
+        t = GGAtoTime(message);
+        printf("\n%d:%d:%d\n", t.hour, t.minute, t.second);
+        *HEX0_1 = t.second;
+        *HEX2_3 = t.minute;
+        *HEX4_5 = t.hour;
+        GPSFlush();
     }
-    
 }
