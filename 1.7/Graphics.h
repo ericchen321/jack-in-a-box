@@ -148,4 +148,20 @@ void Arc(int x_ctr, int y_ctr, int deg1, int deg2, int Colour);
 
 // TODO: may add functions to draw clubs, diamonds, hearts, spades
 
+/* print a character to screen using 5x7 font
+ */
+void OutGraphicsCharFont5x7(int x, int y, int fontcolour, int backgroundcolour, int c, int Erase);
+
+/* print a character to screen using 10x14 font
+ */
+void OutGraphicsCharFont10x14(int x, int y, int colour, int backgroundcolour, int c, int Erase);
+
+/* print a character to screen using 16x27 font
+ */
+void OutGraphicsCharFont16x27(int x, int y, int colour, int backgroundcolour, int c, int Erase);
+
+/* print a character to screen using 22x40 font
+ */
+void OutGraphicsCharFont22x40(int x, int y, int colour, int backgroundcolour, int c, int Erase);
+
 #endif /* GRAPHICS_H_ */

@@ -5,6 +5,10 @@
 
 #include "graphics.h"
 #include <stdio.h>
+#include "Fonts.c"
+
+#define TRUE 1
+#define FALSE 0
 
 void WriteAPixel(int x, int y, int Colour)
 {
@@ -343,6 +347,186 @@ void Arc(int x_ctr, int y_ctr, int deg1, int deg2, int Colour) {
     return;
 }
 
+void OutGraphicsCharFont5x7(int x, int y, int fontcolour, int backgroundcolour, int c, int Erase)
+{
+// using register variables (as opposed to stack based ones) may make execution faster
+// depends on compiler and CPU
+
+	register int row, column, theX = x, theY = y ;
+	register int pixels ;
+	register char theColour = fontcolour  ;
+	register int BitMask, theC = c ;
+
+// if x,y coord off edge of screen don't bother
+
+    if(((short)(x) > (short)(DIM_X-1)) || ((short)(y) > (short)(DIM_Y-1)))
+        return ;
+
+
+// if printable character subtract hex 20
+	if(((short)(theC) >= (short)(' ')) && ((short)(theC) <= (short)('~'))) {
+		theC = theC - 0x20 ;
+		for(row = 0; (char)(row) < (char)(7); row ++)	{
+
+// get the bit pattern for row 0 of the character from the software font
+			pixels = Font5x7[theC][row] ;
+			BitMask = 16 ;
+
+			for(column = 0; (char)(column) < (char)(5); column ++)	{
+
+// if a pixel in the character display it
+				if((pixels & BitMask))
+					WriteAPixel(theX+column, theY+row, theColour) ;
+
+				else {
+					if(Erase == TRUE)
+
+// if pixel is part of background (not part of character)
+// erase the background to value of variable BackGroundColour
+
+						WriteAPixel(theX+column, theY+row, backgroundcolour) ;
+				}
+				BitMask = BitMask >> 1 ;
+			}
+		}
+	}
+}
+
+void OutGraphicsCharFont10x14(int x, int y, int colour, int backgroundcolour, int c, int Erase)
+{
+	register int 	row,
+					column,
+					theX = x,
+					theY = y ;
+	register int 	pixels ;
+	register char 	theColour = colour  ;
+	register int 	BitMask,
+					theCharacter = c,
+					j,
+					theRow, theColumn;
+
+
+    if(((short)(x) > (short)(DIM_X-1)) || ((short)(y) > (short)(DIM_Y-1)))  // if start off edge of screen don't bother
+        return ;
+
+	if(((short)(theCharacter) >= (short)(' ')) && ((short)(theCharacter) <= (short)('~'))) {			// if printable character
+		theCharacter -= 0x20 ;																			// subtract hex 20 to get index of first printable character (the space character)
+		theRow = 14;
+		theColumn = 10;
+
+		for(row = 0; row < theRow ; row ++)	{
+			pixels = Font10x14[theCharacter][row] ;		     								// get the pixels for row 0 of the character to be displayed
+			BitMask = 512 ;							   											// set of hex 200 i.e. bit 7-0 = 0010 0000 0000
+			for(column = 0; column < theColumn;   )  	{
+				if((pixels & BitMask))														// if valid pixel, then write it
+					WriteAPixel(theX+column, theY+row, theColour) ;
+				else {																		// if not a valid pixel, do we erase or leave it along (no erase)
+					if(Erase == TRUE)
+						WriteAPixel(theX+column, theY+row, backgroundcolour) ;
+					// else leave it alone
+				}
+					column ++ ;
+				BitMask = BitMask >> 1 ;
+			}
+		}
+	}
+}
+
+void OutGraphicsCharFont16x27(int x, int y, int colour, int backgroundcolour, int c, int Erase) {
+    register int 	row,
+					column,
+					theX = x,
+					theY = y ;
+	register int 	pixels ;
+	register char 	theColour = colour  ;
+	register int 	BitMask,
+					theCharacter = c,
+					j,
+					theRow, theColumn;
+
+
+    if(((short)(x) > (short)(DIM_X-1)) || ((short)(y) > (short)(DIM_Y-1)))  // if start off edge of screen don't bother
+        return ;
+
+	if(((short)(theCharacter) >= (short)(' ')) && ((short)(theCharacter) <= (short)('~'))) {			// if printable character
+		theCharacter -= 0x20 ;																		// subtract hex 20 to get index of first printable character (the space character)
+        theRow = 27;
+		theColumn = 16;
+
+		for(row = 0; row < theRow ; row ++)	{
+			BitMask = 128;							   											// set of hex 200 i.e. bit 7-0 = 0010 0000 0000
+			for(column = 0; column < theColumn; column++)  	{
+                if (column<8) {
+                    pixels= Font16x27[theCharacter*theRow*2 + 2*row];
+                }
+                else {
+                    pixels = Font16x27[theCharacter*theRow*2 + 2*row + 1];
+                }
+				if((pixels & BitMask))														// if valid pixel, then write it
+					WriteAPixel(theX+column, theY+row, theColour);
+				else {																		// if not a valid pixel, do we erase or leave it along (no erase)
+					if(Erase == TRUE)
+						WriteAPixel(theX+column, theY+row, backgroundcolour) ;
+					// else leave it alone
+				}
+				BitMask = BitMask >> 1 ;
+                if (BitMask == 0) {
+                    BitMask = 128; // reset bitmask
+                }
+			}
+		}
+	}
+}
+
+void OutGraphicsCharFont22x40(int x, int y, int colour, int backgroundcolour, int c, int Erase) {
+    register int 	row,
+					column,
+					theX = x,
+					theY = y ;
+	register int 	pixels ;
+	register char 	theColour = colour  ;
+	register int 	BitMask,
+					theCharacter = c,
+					j,
+					theRow, theColumn;
+
+
+    if(((short)(x) > (short)(DIM_X-1)) || ((short)(y) > (short)(DIM_Y-1)))  // if start off edge of screen don't bother
+        return ;
+
+	if(((short)(theCharacter) >= (short)(' ')) && ((short)(theCharacter) <= (short)('~'))) {			// if printable character
+		theCharacter -= 0x20 ;																		// subtract hex 20 to get index of first printable character (the space character)
+        theRow = 40;
+		theColumn = 22;
+
+		for(row = 0; row < theRow ; row ++)	{
+            BitMask = 128;
+			for(column = 0; column < theColumn; column++)  	{
+                if (column<8) {
+                    pixels= Font22x40[theCharacter*theRow*3 + 3*row];
+                }
+                else if (column<16) {
+                    pixels= Font22x40[theCharacter*theRow*3 + 3*row + 1];
+                }
+                else {
+                    pixels = Font22x40[theCharacter*theRow*3 + 3*row + 2];
+                }
+				if((pixels & BitMask))														// if valid pixel, then write it
+					WriteAPixel(theX+column, theY+row, theColour);
+				else {																		// if not a valid pixel, do we erase or leave it along (no erase)
+					if(Erase == TRUE)
+						WriteAPixel(theX+column, theY+row, backgroundcolour) ;
+					// else leave it alone
+				}
+				BitMask = BitMask >> 1 ;
+                if (BitMask == 0) {
+                    BitMask = 128; // reset bitmask
+                }
+			}
+		}
+	}
+}
+
 void main() {
     FillScreen(DARK_OLIVE_GREEN);
     int hline_ret = HLineAcc(100, 477, 690, YELLOW);
@@ -361,6 +545,17 @@ void main() {
     printf("drawing filled rectangle returns %d\n", rectangle_filled_ret);
     int rectangle_filled_w_border_ret = RectangleFilledWBorder(505, 200, 121, 121, BLACK, RED, 9);
     printf("drawing filled rectangle with border returns %d\n", rectangle_filled_w_border_ret);
+    OutGraphicsCharFont16x27(300, 100, BLACK, WHITE, 'L', 0);
+    OutGraphicsCharFont16x27(330, 100, BLACK, WHITE, 'O', 0);
+    OutGraphicsCharFont16x27(360, 100, BLACK, WHITE, 'L', 0);
+    OutGraphicsCharFont22x40(320, 150, BLACK, WHITE, 'd', 0);
+    OutGraphicsCharFont22x40(350, 150, BLACK, WHITE, 'e', 0);
+    OutGraphicsCharFont22x40(380, 150, BLACK, WHITE, 'a', 0);
+    OutGraphicsCharFont22x40(410, 150, BLACK, WHITE, 'd', 0);
+    OutGraphicsCharFont22x40(440, 150, BLACK, WHITE, 'b', 0);
+    OutGraphicsCharFont22x40(470, 150, BLACK, WHITE, 'e', 0);
+    OutGraphicsCharFont22x40(500, 150, BLACK, WHITE, 'e', 0);
+    OutGraphicsCharFont22x40(530, 150, BLACK, WHITE, 'f', 0);
 }
 
 
