@@ -37,6 +37,7 @@
 #define DrawVLine		2
 #define DrawLine		3
 #define DrawArc         4
+#define DrawCircle      5
 #define	PutAPixel		0xA
 #define	GetAPixel		0xB
 #define	ProgramPaletteColour    0x10
@@ -131,11 +132,13 @@ int RectangleFilledWBorder(int x_ul, int y_ul, int dx, int dy, int BorderColour,
  */
 int Triangle(int x1, int y1, int x2, int y2, int x3, int y3, int Colour);
 
-/* draw a circle with border colour as specified; uses
- * hardware acceleration.
- * the function allows an incomplete circle to be drawn
+/* draw a circle with parameters as specified; use hardware
+ * acceleration.
+ * requires user to make sure the circle can be completely
+ * drawn on screen TODO: maybe shoule allow incomplete circle
+ * to be drawn?
  */
-void Circle(int x_ctr, int y_ctr, int radius, int Colour);
+void Circle(int x_ctr, int y_ctr, int radius, int BorderColour, int FillColour, int BorderWidth);
 
 /* draw an arc with the following parameters:
  * x_ctr and y_ctr - center of the arc

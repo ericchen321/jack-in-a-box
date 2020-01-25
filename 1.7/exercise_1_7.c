@@ -347,6 +347,19 @@ void Arc(int x_ctr, int y_ctr, int deg1, int deg2, int Colour) {
     return;
 }
 
+void Circle(int x_ctr, int y_ctr, int radius, int BorderColour, int FillColour, int BorderWidth)
+{
+    WAIT_FOR_GRAPHICS;
+    GraphicsX1Reg = x_ctr;				// write coords to x1, y1
+	GraphicsY1Reg = y_ctr;
+    GraphicsX2Reg = radius;
+    GraphicsY2Reg = BorderWidth;
+    GraphicsColourReg = BorderColour;
+    GraphicsBackGroundColourReg = FillColour;
+    GraphicsCommandReg = DrawCircle;
+    return;
+}
+
 void OutGraphicsCharFont5x7(int x, int y, int fontcolour, int backgroundcolour, int c, int Erase)
 {
 // using register variables (as opposed to stack based ones) may make execution faster
@@ -528,7 +541,7 @@ void OutGraphicsCharFont22x40(int x, int y, int colour, int backgroundcolour, in
 }
 
 void main() {
-    FillScreen(DARK_OLIVE_GREEN);
+    FillScreen(DARK_SLATE_GRAY);
     int hline_ret = HLineAcc(100, 477, 690, YELLOW);
     printf("drawing horizontal line returns %d\n", hline_ret);
     int vline_ret = VLineAcc(790, 101, 150, TEAL);
@@ -556,6 +569,9 @@ void main() {
     OutGraphicsCharFont22x40(470, 150, BLACK, WHITE, 'e', 0);
     OutGraphicsCharFont22x40(500, 150, BLACK, WHITE, 'e', 0);
     OutGraphicsCharFont22x40(530, 150, BLACK, WHITE, 'f', 0);
+    Circle(700, 360, 40, BLUE, YELLOW, 10);
+    Circle(620, 121, 28, STEEL_BLUE, CORN_SILK, 4);
+    Circle(700, 40, 9, GREEN, GREEN, 0);
 }
 
 
