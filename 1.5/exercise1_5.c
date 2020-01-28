@@ -83,17 +83,6 @@ int GPSTestForReceivedData(void)
     return (GPS_LineStatusReg & 1);
 }
 
-/* 
- * helper for waiting for a message 
- */
-void WaitForMessage()
-{
-    GPSFlush();
-    while (!GPSTestForReceivedData())
-    {
-        printf("\nWaiting for GPS data...\n");
-    }
-}
 
 /* Init for the serial port to communicate with the GPS
  */
