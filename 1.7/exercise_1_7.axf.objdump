@@ -2324,8 +2324,8 @@ void main() {
     printf("drawing line returns %d\n", line_ret);
     1158:	e1a00004 	mov	r0, r4
     115c:	eb0000dc 	bl	14d4 <printf>
-    line_ret = LineAcc(1, 2, 401, 121, TAN);
-    1160:	e3a03078 	mov	r3, #120	; 0x78
+    line_ret = LineAcc(1, 2, 401, 121, NAVY);
+    1160:	e3a0300f 	mov	r3, #15
     1164:	e58d3000 	str	r3, [sp]
     1168:	e3a00001 	mov	r0, #1
     116c:	e1a01006 	mov	r1, r6

@@ -555,7 +555,7 @@ void main() {
     printf("drawing line returns %d\n", line_ret);
     line_ret = LineAcc(150, 300, 750, 450, GOLD);
     printf("drawing line returns %d\n", line_ret);
-    line_ret = LineAcc(1, 2, 401, 121, TAN);
+    line_ret = LineAcc(1, 2, 401, 121, NAVY);
     printf("drawing line returns %d\n", line_ret);
     int rectangle_ret = Rectangle(250, 250, 100, 100, BLUE);
     printf("drawing rectangle returns %d\n", rectangle_ret);
