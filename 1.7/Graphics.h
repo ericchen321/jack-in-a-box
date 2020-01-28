@@ -49,7 +49,7 @@
 
 /* Macro to check if a given colour is valid
  */
-#define COLOR_IS_VALID(x)   (x>=0 && x<=255)
+#define COLOR_IS_VALID(x)   (x>=0 && x<63)
 
 /* Macro to check if a given point is out of bound
  */

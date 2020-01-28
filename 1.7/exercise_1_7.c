@@ -6,6 +6,7 @@
 #include "graphics.h"
 #include <stdio.h>
 #include "Fonts.c"
+#include "ColourPallette.c"
 
 #define TRUE 1
 #define FALSE 0
@@ -541,6 +542,10 @@ void OutGraphicsCharFont22x40(int x, int y, int colour, int backgroundcolour, in
 }
 
 void main() {
+    int i;
+    for (i=0; i<64; i++) {
+        ProgramPalette(i, ColourPalletteData[i]);
+    }
     FillScreen(BLACK);
     int hline_ret = HLineAcc(100, 477, 690, YELLOW);
     printf("drawing horizontal line returns %d\n", hline_ret);
@@ -548,7 +553,7 @@ void main() {
     printf("drawing vertical line returns %d\n", vline_ret);
     int line_ret = LineAcc(100, 100, 150, 150, RED);
     printf("drawing line returns %d\n", line_ret);
-    line_ret = LineAcc(150, 300, 750, 450, CHOCOLATE);
+    line_ret = LineAcc(150, 300, 750, 450, GOLD);
     printf("drawing line returns %d\n", line_ret);
     line_ret = LineAcc(1, 2, 401, 121, TAN);
     printf("drawing line returns %d\n", line_ret);
@@ -556,11 +561,11 @@ void main() {
     printf("drawing rectangle returns %d\n", rectangle_ret);
     int triangle_ret = Triangle(251, 251, 311, 192, 304, 471, ORANGE);
     printf("drawing triangle returns %d\n", triangle_ret);
-    triangle_ret = Triangle(401, 10, 376, 35, 500, 102, AZURE);
+    triangle_ret = Triangle(401, 10, 376, 35, 500, 102, SALMON);
     printf("drawing triangle returns %d\n", triangle_ret);
     int rectangle_filled_ret = RectangleFilled(361, 361, 92, 92, PURPLE);
     printf("drawing filled rectangle returns %d\n", rectangle_filled_ret);
-    int rectangle_filled_w_border_ret = RectangleFilledWBorder(505, 200, 121, 121, BLACK, RED, 9);
+    int rectangle_filled_w_border_ret = RectangleFilledWBorder(505, 200, 121, 121, OLIVE, RED, 9);
     printf("drawing filled rectangle with border returns %d\n", rectangle_filled_w_border_ret);
     OutGraphicsCharFont16x27(300, 100, WHITE, WHITE, 'L', 0);
     OutGraphicsCharFont16x27(330, 100, WHITE, WHITE, 'O', 0);
