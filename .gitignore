@@ -10,6 +10,7 @@ c5_pin_model_dump.txt
 *.qsf
 *.qpf
 *.bak
+*.qws
 *.o
 work/
 db/
