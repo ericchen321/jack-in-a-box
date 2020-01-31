@@ -1,101 +1,92 @@
 Resources:
   # Need: API gateway, API gateway method, maybe need API gateway resource, labmda function, dynamodb table
 
-  Type: AWS::ApiGateway::RestApi
-  Properties: 
-    ApiKeySourceType: String
-    BinaryMediaTypes: 
-      - String
-    Body: Json
-    BodyS3Location: 
-      S3Location
-    CloneFrom: String
-    Description: String
-    EndpointConfiguration: 
-      EndpointConfiguration
-    FailOnWarnings: Boolean
-    MinimumCompressionSize: Integer
-    Name: String
-    Parameters: 
-      Key : Value
-    Policy: Json
-    Tags: 
-      - 
-        Key: "Use_Category"
-        Value: "CPEN391"
+  apiGateway:
+    Type: AWS::ApiGateway::RestApi
+    Properties: 
+      # ApiKeySourceType: String (will need this eventually)
+      Description: "Rest API for our 391 project"
+      EndpointConfiguration: 
+          Types: 
+          - REGIONAL
+      Name: "391_API"
+      Tags: 
+        - 
+          Key: "Use_Category"
+          Value: "CPEN391"
 
 
-  Type: AWS::ApiGateway::Method
-  Properties:
-    ApiKeyRequired: Boolean
-    AuthorizationScopes:
-      - String
-    AuthorizationType: String
-    AuthorizerId: String
-    HttpMethod: String
-    Integration: Integration
-    MethodResponses:
-      - MethodResponse
-    OperationName: String
-    RequestModels:
-      Key: Value
-    RequestParameters:
-      Key: Value
-    RequestValidatorId: String
-    ResourceId: String
-    RestApiId: String
+  # Type: AWS::ApiGateway::Method
+  # Properties:
+  #   ApiKeyRequired: Boolean
+  #   AuthorizationScopes:
+  #     - String
+  #   AuthorizationType: String
+  #   AuthorizerId: String
+  #   HttpMethod: String
+  #   Integration: Integration
+  #   MethodResponses:
+  #     - MethodResponse
+  #   OperationName: String
+  #   RequestModels:
+  #     Key: Value
+  #   RequestParameters:
+  #     Key: Value
+  #   RequestValidatorId: String
+  #   ResourceId: String
+  #   RestApiId: String
 
-  Type: AWS::Lambda::Function
-  Properties: 
-    Code: 
-      Code
-    DeadLetterConfig: 
-      DeadLetterConfig
-    Description: String
-    Environment: 
-      Environment
-    FunctionName: String
-    Handler: String
-    KmsKeyArn: String
-    Layers: 
-      - String
-    MemorySize: Integer
-    ReservedConcurrentExecutions: Integer
-    Role: String
-    Runtime: String
-    Tags: 
-      - 
-        Key: "Use_Category"
-        Value: "CPEN391"
-    Timeout: Integer
-    TracingConfig: 
-      TracingConfig
-    VpcConfig: 
-      VpcConfig
+  # Type: AWS::Lambda::Function
+  # Properties: 
+  #   Code: 
+  #     Code
+  #   DeadLetterConfig: 
+  #     DeadLetterConfig
+  #   Description: String
+  #   Environment: 
+  #     Environment
+  #   FunctionName: String
+  #   Handler: String
+  #   KmsKeyArn: String
+  #   Layers: 
+  #     - String
+  #   MemorySize: Integer
+  #   ReservedConcurrentExecutions: Integer
+  #   Role: String
+  #   Runtime: String
+  #   Tags: 
+  #     - 
+  #       Key: "Use_Category"
+  #       Value: "CPEN391"
+  #   Timeout: Integer
+  #   TracingConfig: 
+  #     TracingConfig
+  #   VpcConfig: 
+  #     VpcConfig
 
-  Type: AWS::DynamoDB::Table
-  Properties: 
-    AttributeDefinitions: 
-      - AttributeDefinition
-    BillingMode: String
-    GlobalSecondaryIndexes: 
-      - GlobalSecondaryIndex
-    KeySchema: 
-      - KeySchema
-    LocalSecondaryIndexes: 
-      - LocalSecondaryIndex
-    PointInTimeRecoverySpecification: 
-      PointInTimeRecoverySpecification
-    ProvisionedThroughput: 
-      ProvisionedThroughput
-    SSESpecification: 
-      SSESpecification
-    StreamSpecification: 
-      StreamSpecification
-    TableName: String
-    Tags: 
-      - 
-        Key: "Use_Category"
-        Value: "CPEN391"
-    TimeToLiveSpecification: 
-      TimeToLiveSpecification
+  # Type: AWS::DynamoDB::Table
+  # Properties: 
+  #   AttributeDefinitions: 
+  #     - AttributeDefinition
+  #   BillingMode: String
+  #   GlobalSecondaryIndexes: 
+  #     - GlobalSecondaryIndex
+  #   KeySchema: 
+  #     - KeySchema
+  #   LocalSecondaryIndexes: 
+  #     - LocalSecondaryIndex
+  #   PointInTimeRecoverySpecification: 
+  #     PointInTimeRecoverySpecification
+  #   ProvisionedThroughput: 
+  #     ProvisionedThroughput
+  #   SSESpecification: 
+  #     SSESpecification
+  #   StreamSpecification: 
+  #     StreamSpecification
+  #   TableName: String
+  #   Tags: 
+  #     - 
+  #       Key: "Use_Category"
+  #       Value: "CPEN391"
+  #   TimeToLiveSpecification: 
+  #     TimeToLiveSpecification
