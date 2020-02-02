@@ -17,3 +17,11 @@ db/
 incremental_db/
 simulation/
 output_files/
+
+// for the mainframe folder, ignores all except .h, .c, .vhd, .v, .sv files
+mainframe/*
+!mainframe/*.h
+!mainframe/*.c
+!mainframe/*.vhd
+!mainframe/*.v
+!mainframe/*.sv
