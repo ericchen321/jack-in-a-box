@@ -1,3 +1,12 @@
+Parameters:
+  Region:
+    Type: String 
+    Default: "us-west-2" 
+
+  AccountId:
+    Type: String 
+    Default: "495679467660"
+
 Resources:
   # Need: API gateway, API gateway method, maybe need API gateway resource, labmda function, dynamodb table
 
@@ -14,27 +23,42 @@ Resources:
         - 
           Key: "Use_Category"
           Value: "CPEN391"
+  apiMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: False
+      AuthorizationType: NONE
+      # AuthorizerId: String
+      HttpMethod: POST
+      Integration: 
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: 
+          Fn::Sub: "arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${Region}:${AccountId}:function:PutResult/invocations"
+      OperationName: "PutResult"
+      ResourceId: 
+        Fn::GetAtt: [apiGateway, RootResourceId]
+      RestApiId:
+        Ref: apiGateway
 
+  apiGatewayDeployment:
+    Type: "AWS::ApiGateway::Deployment"
+    DependsOn:
+      - apiMethod
+    Properties:
+      RestApiId: 
+        Ref: apiGateway
+      StageName: "call"
 
-  # Type: AWS::ApiGateway::Method
-  # Properties:
-  #   ApiKeyRequired: Boolean
-  #   AuthorizationScopes:
-  #     - String
-  #   AuthorizationType: String
-  #   AuthorizerId: String
-  #   HttpMethod: String
-  #   Integration: Integration
-  #   MethodResponses:
-  #     - MethodResponse
-  #   OperationName: String
-  #   RequestModels:
-  #     Key: Value
-  #   RequestParameters:
-  #     Key: Value
-  #   RequestValidatorId: String
-  #   ResourceId: String
-  #   RestApiId: String
+  lambdaApiGatewayInvoke:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: 
+        Fn::Sub: arn:aws:lambda:${Region}:${AccountId}:function:PutResult # [lambdaFunction, Arn]
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: "arn:aws:execute-api:${Region}:${AccountId}:${apiGateway}/*/POST/"
 
   # Type: AWS::Lambda::Function
   # Properties: 
