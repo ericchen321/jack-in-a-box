@@ -1,3 +1,16 @@
+Parameters:
+  Region:
+    Type: String 
+    Default: "us-west-2" 
+
+  AccountId:
+    Type: String 
+    Default: "495679467660"
+
+  LambdaName: 
+    Type: String 
+    Default: "391_Lambda"
+
 Resources:
   # Need: API gateway, API gateway method, maybe need API gateway resource, labmda function, dynamodb table
 
@@ -14,55 +27,102 @@ Resources:
         - 
           Key: "Use_Category"
           Value: "CPEN391"
+  apiMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: False
+      AuthorizationType: NONE
+      # AuthorizerId: String
+      HttpMethod: POST
+      Integration: 
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: 
+          Fn::Sub: "arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${Region}:${AccountId}:function:${LambdaName}/invocations"
+      OperationName:
+        Ref: LambdaName
+      ResourceId: 
+        Fn::GetAtt: [apiGateway, RootResourceId]
+      RestApiId:
+        Ref: apiGateway
 
+  apiGatewayDeployment:
+    Type: "AWS::ApiGateway::Deployment"
+    DependsOn:
+      - apiMethod
+    Properties:
+      RestApiId: 
+        Ref: apiGateway
+      StageName: "call"
 
-  # Type: AWS::ApiGateway::Method
-  # Properties:
-  #   ApiKeyRequired: Boolean
-  #   AuthorizationScopes:
-  #     - String
-  #   AuthorizationType: String
-  #   AuthorizerId: String
-  #   HttpMethod: String
-  #   Integration: Integration
-  #   MethodResponses:
-  #     - MethodResponse
-  #   OperationName: String
-  #   RequestModels:
-  #     Key: Value
-  #   RequestParameters:
-  #     Key: Value
-  #   RequestValidatorId: String
-  #   ResourceId: String
-  #   RestApiId: String
+  lambdaApiGatewayInvoke:
+    Type: "AWS::Lambda::Permission"
+    DependsOn:
+      - lambdaFunction
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName: 
+        Fn::Sub: arn:aws:lambda:${Region}:${AccountId}:function:${LambdaName} # [lambdaFunction, Arn]
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: "arn:aws:execute-api:${Region}:${AccountId}:${apiGateway}/*/POST/"
 
-  # Type: AWS::Lambda::Function
-  # Properties: 
-  #   Code: 
-  #     Code
-  #   DeadLetterConfig: 
-  #     DeadLetterConfig
-  #   Description: String
-  #   Environment: 
-  #     Environment
-  #   FunctionName: String
-  #   Handler: String
-  #   KmsKeyArn: String
-  #   Layers: 
-  #     - String
-  #   MemorySize: Integer
-  #   ReservedConcurrentExecutions: Integer
-  #   Role: String
-  #   Runtime: String
-  #   Tags: 
-  #     - 
-  #       Key: "Use_Category"
-  #       Value: "CPEN391"
-  #   Timeout: Integer
-  #   TracingConfig: 
-  #     TracingConfig
-  #   VpcConfig: 
-  #     VpcConfig
+  lambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Code: 
+        ZipFile: |
+          def handler(event,context):
+            return {
+              'body': 'Hello there!',
+              'headers': {
+                'Content-Type': 'text/plain'
+              },
+              'statusCode': 200
+            }
+      Description: "The Lambda function to handle our backend logic."
+      # Environment: 
+      #   Environment
+      FunctionName: 
+        Ref: LambdaName
+      Handler: "index.handler"
+      Role: 
+        Fn::GetAtt: [lambdaIAMRole, Arn]
+      Runtime: python3.6
+      Tags: 
+        - 
+          Key: "Use_Category"
+          Value: "CPEN391"
+      # TracingConfig: 
+      #   TracingConfig
+      # VpcConfig: 
+      #   VpcConfig
+
+  lambdaIAMRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action:
+              - "sts:AssumeRole"
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+      Policies:
+        - PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Effect: "Allow"
+                Resource:
+                  - Fn::Sub: "arn:aws:logs:${Region}:${AccountId}:log-group:/aws/lambda/${LambdaName}:*"
+          PolicyName: 
+            Ref: LambdaName
 
   # Type: AWS::DynamoDB::Table
   # Properties: 
