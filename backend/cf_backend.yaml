@@ -74,7 +74,7 @@ Resources:
         ZipFile: |
           def handler(event,context):
             return {
-              'body': 'Hello there!',
+              'body': 'Hello from 391 backend!\n',
               'headers': {
                 'Content-Type': 'text/plain'
               },
@@ -150,3 +150,9 @@ Resources:
   #       Value: "CPEN391"
   #   TimeToLiveSpecification: 
   #     TimeToLiveSpecification
+
+Outputs:
+  APIInvokeURL:
+    Description: The url for our project to hit.
+    Value: 
+      Fn::Sub: "https://${apiGateway}.execute-api.${Region}.amazonaws.com/call/"
