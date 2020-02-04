@@ -55,6 +55,15 @@
  */
 #define POINT_POS_IS_VALID(x, y) (x>=0 && x<DIM_X && y>=0 && y<DIM_Y)
 
+/* data structures
+ */
+extern const unsigned int ColourPalletteData[256];
+extern const unsigned char Font5x7[95][7];
+extern const unsigned short int Font10x14[][14];
+extern const unsigned char Font16x27[];
+extern const unsigned char Font22x40[];
+extern const unsigned char Font38x59[];
+
 /*******************************************************************************************
 * This function writes a single pixel to the x,y coords specified using the specified colour
 * Note colour is a byte and represents a palette number (0-255) not a 24 bit RGB value
