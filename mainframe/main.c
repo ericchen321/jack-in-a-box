@@ -4,6 +4,9 @@
  * The main function that runs on DE1's ARM processor
  */
 
+#include "Graphics.h"
+#include "touchscreen.h"
+
 void main() {
     // TODO: initialization: initialize UART, touchscreen, GUI, etc.
 
