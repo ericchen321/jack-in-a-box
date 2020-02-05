@@ -74,7 +74,7 @@ Resources:
         ZipFile: |
           def handler(event,context):
             return {
-              'body': 'Hello there!',
+              'body': 'Hello from 391 backend!\n',
               'headers': {
                 'Content-Type': 'text/plain'
               },
@@ -124,29 +124,24 @@ Resources:
           PolicyName: 
             Ref: LambdaName
 
-  # Type: AWS::DynamoDB::Table
-  # Properties: 
-  #   AttributeDefinitions: 
-  #     - AttributeDefinition
-  #   BillingMode: String
-  #   GlobalSecondaryIndexes: 
-  #     - GlobalSecondaryIndex
-  #   KeySchema: 
-  #     - KeySchema
-  #   LocalSecondaryIndexes: 
-  #     - LocalSecondaryIndex
-  #   PointInTimeRecoverySpecification: 
-  #     PointInTimeRecoverySpecification
-  #   ProvisionedThroughput: 
-  #     ProvisionedThroughput
-  #   SSESpecification: 
-  #     SSESpecification
-  #   StreamSpecification: 
-  #     StreamSpecification
-  #   TableName: String
-  #   Tags: 
-  #     - 
-  #       Key: "Use_Category"
-  #       Value: "CPEN391"
-  #   TimeToLiveSpecification: 
-  #     TimeToLiveSpecification
+  dynamodbTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - AttributeName: "username"
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema: 
+        - AttributeName: "username"
+          KeyType: HASH
+      TableName: "391_database"
+      Tags: 
+        - 
+          Key: "Use_Category"
+          Value: "CPEN391"
+
+Outputs:
+  APIInvokeURL:
+    Description: The url for our project to hit.
+    Value: 
+      Fn::Sub: "https://${apiGateway}.execute-api.${Region}.amazonaws.com/call/"
