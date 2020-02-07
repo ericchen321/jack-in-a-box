@@ -11,6 +11,10 @@ Parameters:
     Type: String 
     Default: "391_Lambda"
 
+  TableName:
+    Type: String 
+    Default: "391_Table"
+
 Resources:
   # Need: API gateway, API gateway method, maybe need API gateway resource, labmda function, dynamodb table
 
@@ -72,17 +76,54 @@ Resources:
     Properties: 
       Code: 
         ZipFile: |
-          def handler(event,context):
+          import json
+          import boto3
+
+          def handler(event, context):
+            event = json.loads(event['body'])
+
+            try: 
+              username = event['username']
+              phone_number = event['phone_number']
+              game_result = event['game_result']
+            except Exception as e:
+              return {
+                'statusCode': 400,
+                'body': json.dumps("Malformed request. POST payload should contain username, phone number, and game_result.")
+              }
+
+            dynamodb = boto3.resource('dynamodb')
+            table = dynamodb.Table('391_Table')
+            
+            user = {}
+            
+            try: 
+                user = table.get_item(Key={"username": username})['Item']
+                
+                if game_result == "w":
+                    user['wins'] = str(int(user['wins']) + 1)
+                elif game_result == "l":
+                    user['losses'] = str(int(user['losses']) + 1)
+                else:
+                    user['ties'] = str(int(user['ties']) + 1)
+                    
+            except Exception as e:
+                print(e)
+                user = {
+                    "username": username,
+                    "phone_number": phone_number,
+                    "wins": "1" if game_result == "w" else "0",
+                    "losses": "1" if game_result == "l" else "0",
+                    "ties": "1" if game_result == "t" else "0",
+                }
+                
+            table.put_item(Item=user)
+            
             return {
-              'body': 'Hello from 391 backend!\n',
-              'headers': {
-                'Content-Type': 'text/plain'
-              },
-              'statusCode': 200
+                'statusCode': 200,
+                'body': json.dumps(user)
             }
       Description: "The Lambda function to handle our backend logic."
-      # Environment: 
-      #   Environment
       FunctionName: 
         Ref: LambdaName
       Handler: "index.handler"
@@ -93,10 +134,7 @@ Resources:
         - 
           Key: "Use_Category"
           Value: "CPEN391"
-      # TracingConfig: 
-      #   TracingConfig
-      # VpcConfig: 
-      #   VpcConfig
+
 
   lambdaIAMRole:
     Type: "AWS::IAM::Role"
@@ -121,6 +159,12 @@ Resources:
                 Effect: "Allow"
                 Resource:
                   - Fn::Sub: "arn:aws:logs:${Region}:${AccountId}:log-group:/aws/lambda/${LambdaName}:*"
+              - Action:
+                  - "dynamodb:PutItem"
+                  - "dynamodb:GetItem"
+                Effect: "Allow"
+                Resource:
+                  - Fn::Sub: "arn:aws:dynamodb:${Region}:${AccountId}:table/${TableName}"
           PolicyName: 
             Ref: LambdaName
 
@@ -134,7 +178,8 @@ Resources:
       KeySchema: 
         - AttributeName: "username"
           KeyType: HASH
-      TableName: "391_database"
+      TableName:
+        Ref: TableName
       Tags: 
         - 
           Key: "Use_Category"
