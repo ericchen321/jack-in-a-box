@@ -1,15 +1,11 @@
 /*
  * Author: Jaskirat Singh, Eric Chen, Paul Davies
  * 
- * GUI functions to be called from the game logic
+ * GUI stuff to be called from the game logic
  */
 
-#include "Graphics.h"
-#include "touchscreen.h"
-
-// TODO: should change them to 0
-#define PLAYER_HAND_INIT 10
-#define DEALER_HAND_INIT 5
+#ifndef GUI_H_
+#define GUI_H_
 
 /* screens */
 #define HOME_SCREEN 0
@@ -85,10 +81,6 @@
 /* for the illegal phone number entry screen */
 # define OK_PRESSED 0
 
-/* data structures */
-extern int player_hand;
-extern int dealer_hand;
-
 /* render the welcome screen
  */
 void RenderHomeScreen(void);
@@ -161,11 +153,6 @@ void RenderPlayerTurnScreenBeforeDealing(void);
  */
 void RenderPlayerTurnScreenDuringDealing(void);
 
-/* deal one card to the player. Modify
- * player_hand upon return
- */
-void DealCardToPlayer(void);
-
 /* get response from player's turn
  * screen
  */
@@ -174,11 +161,6 @@ int GetPlayerTurnScreenResponse(void);
 /* render the screen during a dealer's turn
  */
 void RenderDealerTurnScreen(void);
-
-/* deal one card to the dealer. Modify
- * dealer_hand upon return
- */
-void DealCardToDealer(void);
 
 /* render the screen for phone
  * number entry
@@ -222,3 +204,5 @@ void RenderIllegalPhoneNumScreen(void);
  * number entry screen
  */
 int GetIllegalPhoneNumScreenResponse(void);
+
+#endif /* GUI_H_ */

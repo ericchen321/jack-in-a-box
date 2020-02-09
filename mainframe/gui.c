@@ -5,6 +5,7 @@
 #include "Graphics.h"
 #include "touchscreen.h"
 #include "gui.h"
+#include "gameLogic.h"
 #include <string.h>
 
 char line_a[] = "->THE OBJECTIVE OF BLACKJACK";
@@ -26,9 +27,6 @@ char line_p[] = "(i) 2 through 10 count as";
 char line_q[] = "face value. (3 is 3...).";
 char line_r[] = "(ii) Face cards count as 10.";
 char line_s[] = "(iii) Ace can be 1 or 11.";    
-
-int player_hand = PLAYER_HAND_INIT;
-int dealer_hand = DEALER_HAND_INIT;
 
 void screenBorder() {
     //Border for the screen    
@@ -657,20 +655,6 @@ void RenderPlayerTurnScreenDuringDealing(void) {
     dealingCardDisplay(DEALING_PLAYER);
 }
 
-void DealCardToPlayer(void) {
-    /* NOTE: set to some dummy values for testing */
-    player_hand += 2;
-
-    /* NOTE: for now just poll a bit to mock the dealing & recognizing process */
-    int i;
-    for (i=0; i<50; i++) {
-        printf("dealing a card to player... player score is %d\n", player_hand);
-    }
-
-    /* TODO: actual card dealing & recognition */
-    return;
-}
-
 int GetPlayerTurnScreenResponse(void) {
     //Getting the point cordinates of touch release
     //The points are set after the finger is released from the screen
@@ -701,20 +685,6 @@ void RenderDealerTurnScreen(void) {
     screenBorder();
     homeButton(2);
     dealingCardDisplay(DEALING_DEALER);
-}
-
-void DealCardToDealer(void) {
-    /* NOTE: set to some dummy values for testing */
-    dealer_hand += 4;
-
-    /* NOTE: for now just poll a bit to mock the dealing & recognizing process */
-    int i;
-    for (i=0; i<50; i++) {
-        printf("dealing a card to dealer... dealer score is %d\n", dealer_hand);
-    }
-
-    /* TODO: actual card dealing & recognition */
-    return;
 }
 
 void RenderEnterPhoneNumberScreen(int* phone_num, int entry_pos) {

@@ -8,6 +8,7 @@
 #include "Graphics.h"
 #include "touchscreen.h"
 #include "gui.h"
+#include "gameLogic.h"
 
 void main() {
     // TODO: initialization: initialize UART, touchscreen, GUI, game state variables, etc.
