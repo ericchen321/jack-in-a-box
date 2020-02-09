@@ -7,10 +7,44 @@
 #include "Graphics.h"
 #include "touchscreen.h"
 
+// TODO: should change them to 0
+#define PLAYER_HAND_INIT 10
+#define DEALER_HAND_INIT 5
+
 /* screens */
 #define HOME_SCREEN 0
 #define RESULT_SCREEN 1
 #define SEND_RESULT_SCREEN 2
+#define MANUAL_SCREEN_0 3
+#define MANUAL_SCREEN_1 4
+#define MANUAL_SCREEN_2 5
+#define MANUAL_SCREEN_3 6
+#define SETUP_PLAYER_1ST_SCREEN 7
+#define SETUP_DEALER_SCREEN 8
+#define SETUP_PLAYER_2ND_SCREEN 9
+#define SETUP_WAIT_PLAYER_RESPOND 10
+#define PLAYER_TURN_SCREEN 11
+#define DEALER_TURN_SCREEN 12
+#define ILLEGAL_PHONE_NUM_SCREEN 13
+
+/* for the home screen */
+#define READ_MANUAL_PRESSED 0
+#define PLAY_PRESSED 1
+
+/* for manual pages */
+#define FORWARD_PRESSED 0
+#define BACK_PRESSED 1
+
+/* for the setup screens and turn screens */
+#define DEALING_PLAYER 0
+#define DEALING_DEALER 1
+
+/* for the setup screen(s) */
+#define CONTINUE_PRESSED 0
+
+/* for player turn screen */
+#define PLAYER_HIT_ME 0
+#define PLAYER_STAND 1
 
 /* for the phone number entry screen */
 #define ENTRY_BOX_UL_X 150
@@ -48,9 +82,103 @@
 #define START_AGAIN_PRESSED 0
 #define SEND_RESULT_TO_PHONE_PRESSED 1
 
-/* display the welcome screen
+/* for the illegal phone number entry screen */
+# define OK_PRESSED 0
+
+/* data structures */
+extern int player_hand;
+extern int dealer_hand;
+
+/* render the welcome screen
  */
-void homeScreen();
+void RenderHomeScreen(void);
+
+/* get response from the home
+ * screen
+ */
+int GetHomeScreenResponse(void);
+
+/* render the 1st manual screen 
+ */
+void RenderManualScreen0(void);
+
+/* get response from the 1st manual
+ * page
+ */
+int GetManualScreen0Response(void);
+
+/* render the 2nd manual screen
+ */
+void RenderManualScreen1(void);
+
+/* get respones from the 2nd manual
+ * page
+ */
+int GetManualScreen1Response(void);
+
+/* render the 3rd manual screen
+ */
+void RenderManualScreen2(void);
+
+/* get response from the 3rd manual
+ * page
+ */
+int GetManualScreen2Response(void);
+
+/* render the 4th manual screen
+ */
+void RenderManualScreen3(void);
+
+/* get response from the 4th manual
+ * page
+ */
+int GetManualScreen3Response(void);
+
+/* render the screen for set-up
+ * phase, when dealing is in progress.
+ * Takes a flag: DEALING_PLAYER or
+ * DEALING_DEALER
+ */
+void RenderSetupScreenDuringDealing(int flag);
+
+/* render the screen for set-up
+ * phase, after dealing is done
+ */
+void RenderSetupScreenAfterDealing(void);
+
+/* get response from the set-up
+ * screen
+ */
+int GetSetupScreenResponse(void);
+
+/* render the screen during a player's
+ * turn, before a card is dealt
+ */
+void RenderPlayerTurnScreenBeforeDealing(void);
+
+/* render the screen during a player's
+ * turn, during the time of dealing a card
+ */
+void RenderPlayerTurnScreenDuringDealing(void);
+
+/* deal one card to the player. Modify
+ * player_hand upon return
+ */
+void DealCardToPlayer(void);
+
+/* get response from player's turn
+ * screen
+ */
+int GetPlayerTurnScreenResponse(void);
+
+/* render the screen during a dealer's turn
+ */
+void RenderDealerTurnScreen(void);
+
+/* deal one card to the dealer. Modify
+ * dealer_hand upon return
+ */
+void DealCardToDealer(void);
 
 /* render the screen for phone
  * number entry
@@ -85,26 +213,12 @@ void SendResponseToPhone(int* phone_num);
  */
 int ResultScreenAndSendResultScreen(int result);
 
-/* helpers */
-extern int player_hand;
-extern int dealer_hand;
+/* render the illegal phone number
+ * prompt screen
+ */
+void RenderIllegalPhoneNumScreen(void);
 
-void screenBorder();
-void homeButton(int flag);
-void manualScreen();
-void manualScreenParagraphFiller(char *a, int lineNumber);
-void forwardButton();
-void backwardButton();
-void manual_1_helper();
-void manual_2_helper();
-void manual_3_helper();
-void manual_4_helper();
-void setup_play();
-void hand_display();
-void hit_stand_display();
-void hitme();
-void dealerPlay();
-void results(int result);
-void processResultScreen(int result);
-void processPhoneScreen(void);
-void dealingCardDisplay();
+/* get response from the illegal phone
+ * number entry screen
+ */
+int GetIllegalPhoneNumScreenResponse(void);

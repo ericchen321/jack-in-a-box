@@ -27,8 +27,8 @@ char line_q[] = "face value. (3 is 3...).";
 char line_r[] = "(ii) Face cards count as 10.";
 char line_s[] = "(iii) Ace can be 1 or 11.";    
 
-player_hand = 19;
-dealer_hand = 18;
+int player_hand = PLAYER_HAND_INIT;
+int dealer_hand = DEALER_HAND_INIT;
 
 void screenBorder() {
     //Border for the screen    
@@ -39,8 +39,26 @@ void screenBorder() {
     RectangleFilledWBorder(51, 20, 710, 439, RED, BLACK, 9);
 }
 
-void homeScreen() {
-    
+void homeButton(int flag) {
+    char home[] = "HOME";
+    int x;
+    if(flag==1){
+        RectangleFilledWBorder (590,40, 150, 50, RED, BLACK, 9);
+        x = 610;
+    }
+    else
+    {
+        RectangleFilledWBorder (491,40, 249, 50, RED, BLACK, 9);
+        x = 555;
+    }
+    int i;
+    for(i=0;i<4;i++){
+        OutGraphicsCharFont22x40(x, 45, WHITE, BLACK, home[i], 0);
+        x=x+30;
+    }
+}
+
+void RenderHomeScreen(void) {
     screenBorder();
     int i;
     //WELCOME 
@@ -284,48 +302,52 @@ void homeScreen() {
             }
         } 
     }
-
-    while(1){
-        //Getting the point cordinates of touch release
-        //The points are set after the finger is released from the screen
-        Point p = GetRelease();
-    
-        //condition to determine which button is pressed
-        if ((p.x >= 200) && (p.x <= 400) && (p.y>=250) && (p.y<=400)){
-            printf("Play button pressed");
-            setup_play();
-        }
-        else if ((p.x>=450)&&(p.x<=650)&&((p.y>=200)&&(p.y<=400)))
-        {
-            printf("Manual Button pressed");
-            manualScreen();
-            //return 1;
-        }
-        ///else return 0;
-
-    } 
 }
 
-void homeButton(int flag) {
-    char home[] = "HOME";
-    int x;
-    if(flag==1){
-        RectangleFilledWBorder (590,40, 150, 50, RED, BLACK, 9);
-        x = 610;
+int GetHomeScreenResponse(void) {
+    //Getting the point cordinates of touch release
+    //The points are set after the finger is released from the screen
+    Point p = GetRelease();
+
+    //condition to determine which button is pressed
+    if ((p.x >= 200) && (p.x <= 400) && (p.y>=250) && (p.y<=400)){
+        printf("Play button pressed\n");
+        return PLAY_PRESSED;
     }
-    else
+    else if ((p.x>=450)&&(p.x<=650)&&((p.y>=200)&&(p.y<=400)))
     {
-        RectangleFilledWBorder (491,40, 249, 50, RED, BLACK, 9);
-        x = 555;
+        printf("Manual Button pressed\n");
+        return READ_MANUAL_PRESSED;
     }
-    int i;
-    for(i=0;i<4;i++){
-        OutGraphicsCharFont22x40(x, 45, WHITE, BLACK, home[i], 0);
-        x=x+30;
+    else {
+        return 0xFFFFFFFF;
     }
 }
 
-void manualScreen() {
+void manualScreenParagraphFiller( char *a, int lineNumber) {
+    int len = (int) strlen(a);
+    int i;
+    int y = (lineNumber-1)*40 + 110;
+    int x = 85;
+    for (i=0; i<len; i++) {
+            OutGraphicsCharFont16x27(x, y, WHITE, BLACK, a[i], 0);
+            x = x+20;
+    }
+}
+
+void forward_button(){
+    RectangleFilledWBorder(690,390,37,35, RED, BLACK, 2);
+    OutGraphicsCharFont22x40(697,388,RED, BLACK, '-', 0);
+    OutGraphicsCharFont22x40(705,388,RED, BLACK, '>', 0);
+}
+
+void backward_button() {
+    RectangleFilledWBorder(85,390,37,35, RED, BLACK, 2);
+    OutGraphicsCharFont22x40(92,388,RED, BLACK, '<', 0);
+    OutGraphicsCharFont22x40(99,388,RED, BLACK, '-', 0);
+}
+
+void RenderManualScreen0(void) {
     screenBorder();
     int i;
     char heading[] = "MANUAL";
@@ -336,38 +358,6 @@ void manualScreen() {
         a = a + 20;
     }
     homeButton(1);
-    manual_1_helper();        
-}
-
-void manualScreenParagraphFiller( char *a, int lineNumber) {
-    int len = (int) strlen(a);
-    int i;
-    int y = (lineNumber-1)*40 + 110;
-    int x = 85;
-    for (i=0; i<len; i++){
-            OutGraphicsCharFont16x27(x, y, WHITE, BLACK, a[i], 0);
-            x = x+20;
-        }
-}
-
-/* Next page sign for manuals
-*/
-void forward_button(){
-    RectangleFilledWBorder(690,390,37,35, RED, BLACK, 2);
-    OutGraphicsCharFont22x40(697,388,RED, BLACK, '-', 0);
-    OutGraphicsCharFont22x40(705,388,RED, BLACK, '>', 0);
-}
-
-/*Previous page sign for manuals
-*/
-void backward_button() {
-    RectangleFilledWBorder(85,390,37,35, RED, BLACK, 2);
-    OutGraphicsCharFont22x40(92,388,RED, BLACK, '<', 0);
-    OutGraphicsCharFont22x40(99,388,RED, BLACK, '-', 0);
-}
-
-void manual_1_helper(){
-
     //Manual Instructions inner border
     RectangleFilledWBorder(71, 100, 670, 339, RED, BLACK, 9);
 
@@ -376,27 +366,29 @@ void manual_1_helper(){
     manualScreenParagraphFiller(line_b, 2);
 
     forward_button();
+}
 
-    //Getting the touch point from the user
-    while(1){
-        //Getting the point cordinates of touch release
-        //The points are set after the finger is released from the screen
-        Point p = GetRelease();
-    
-        //condition to determine which button is pressed
-        if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
-            printf("Home Button Pressed from Manual");
-            homeScreen();
-        }
-        else if ((p.x>=670)&&(p.x<=747)&&((p.y>=370)&&(p.y<=425)))
-        {
-            printf("Page 2 button pressed from manual 1");
-            manual_2_helper();
-        }
+int GetManualScreen0Response(void) {
+    //Getting the point cordinates of touch release
+    //The points are set after the finger is released from the screen
+    Point p = GetRelease();
+
+    //condition to determine which button is pressed
+    if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
+        printf("home button pressed\n");
+        return MAIN_MENU_PRESSED;
+    }
+    else if ((p.x>=670)&&(p.x<=747)&&((p.y>=370)&&(p.y<=425)))
+    {
+        printf("forward pressed\n");
+        return FORWARD_PRESSED;
+    }
+    else {
+        return 0xFFFFFFFF;
     }
 }
 
-void manual_2_helper() {
+void RenderManualScreen1(void) {
     //Manual Instructions inner border
     RectangleFilledWBorder(71, 100, 670, 339, RED, BLACK, 9);
 
@@ -411,34 +403,35 @@ void manual_2_helper() {
 
     backward_button();
     forward_button();
+}
 
-    //Getting the touch point from the user
-    while(1){
-        //Getting the point cordinates of touch release
-        //The points are set after the finger is released from the screen
-        Point p = GetRelease();
-    
-        //condition to determine which button is pressed
-        //Homescreen
-        if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
-            printf("Home Button Pressed from Manual");
-            homeScreen();
-        }
-        //Next page
-        else if ((p.x>=670)&&(p.x<=747)&&((p.y>=370)&&(p.y<=425))){
-            printf("Page 2 button pressed from manual 1");
-            manual_3_helper();
-        }
-        //Previous page
-        else if((p.x>=65)&&(p.x<=142)&&((p.y>=370)&&(p.y<=455))){
-            printf("Previous page button pressed from manual page 2");
-            manual_1_helper();
-        }
+int GetManualScreen1Response(void) {
+    //Getting the point cordinates of touch release
+    //The points are set after the finger is released from the screen
+    Point p = GetRelease();
+
+    //condition to determine which button is pressed
+    //Homescreen
+    if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
+        printf("home button pressed\n");
+        return MAIN_MENU_PRESSED;
+    }
+    //Next page
+    else if ((p.x>=670)&&(p.x<=747)&&((p.y>=370)&&(p.y<=425))){
+        printf("forward pressed\n");
+        return FORWARD_PRESSED;
+    }
+    //Previous page
+    else if((p.x>=65)&&(p.x<=142)&&((p.y>=370)&&(p.y<=455))){
+        printf("back pressed\n");
+        return BACK_PRESSED;
+    }
+    else {
+        return 0xFFFFFFFF;
     }
 }
 
-void manual_3_helper(){
-    
+void RenderManualScreen2(void) {
     //Manual Instructions inner border
     RectangleFilledWBorder(71, 100, 670, 339, RED, BLACK, 9);
 
@@ -451,34 +444,35 @@ void manual_3_helper(){
 
     forward_button();
     backward_button();
+}
 
-    //Getting the touch point from the user
-    while(1){
-        //Getting the point cordinates of touch release
-        //The points are set after the finger is released from the screen
-        Point p = GetRelease();
-    
-        //condition to determine which button is pressed
-        //Homescreen
-        if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
-            printf("Home Button Pressed from Manual");
-            homeScreen();
-        }
-        //Next page
-        else if ((p.x>=670)&&(p.x<=747)&&((p.y>=370)&&(p.y<=425))) {
-            printf("Page 2 button pressed from manual 1");
-            manual_4_helper();
-        }
-        //Previous page
-        else if((p.x>=65)&&(p.x<=142)&&((p.y>=370)&&(p.y<=455))){
-            printf("Previous page button pressed from manual page 2");
-            manual_2_helper();
-        }
+int GetManualScreen2Response(void) {
+    //Getting the point cordinates of touch release
+    //The points are set after the finger is released from the screen
+    Point p = GetRelease();
+
+    //condition to determine which button is pressed
+    //Homescreen
+    if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
+        printf("home button pressed\n");
+        return MAIN_MENU_PRESSED;
+    }
+    //Next page
+    else if ((p.x>=670)&&(p.x<=747)&&((p.y>=370)&&(p.y<=425))) {
+        printf("forward pressed\b");
+        return FORWARD_PRESSED;
+    }
+    //Previous page
+    else if((p.x>=65)&&(p.x<=142)&&((p.y>=370)&&(p.y<=455))){
+        printf("back pressed\n");
+        return BACK_PRESSED;
+    }
+    else {
+        return 0xFFFFFFFF;
     }
 }
 
-void manual_4_helper(){
-
+void RenderManualScreen3(void) {
     //Manual Instructions inner border
     RectangleFilledWBorder(71, 100, 670, 339, RED, BLACK, 9);
 
@@ -490,92 +484,85 @@ void manual_4_helper(){
     manualScreenParagraphFiller(line_s, 5);
 
     backward_button();
+}
 
-    //Getting the touch point from the user
-    while(1){
-        //Getting the point cordinates of touch release
-        //The points are set after the finger is released from the screen
-        Point p = GetRelease();
-    
-        //condition to determine which button is pressed
-        //Homescreen
-        if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
-            printf("Home Button Pressed from Manual");
-            homeScreen();
-        }
-        //Previous page
-        else if((p.x>=65)&&(p.x<=142)&&((p.y>=370)&&(p.y<=455))){
-            printf("Previous page button pressed from manual page 2");
-            manual_3_helper();
-        }
+int GetManualScreen3Response(void) {
+    //Getting the point cordinates of touch release
+    //The points are set after the finger is released from the screen
+    Point p = GetRelease();
+
+    //condition to determine which button is pressed
+    //Homescreen
+    if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
+        printf("home button pressed\n");
+        return MAIN_MENU_PRESSED;
+    }
+    //Previous page
+    else if((p.x>=65)&&(p.x<=142)&&((p.y>=370)&&(p.y<=455))){
+        printf("back pressed\n");
+        return BACK_PRESSED;
+    }
+    else {
+        return 0xFFFFFFFF;
     }
 }
 
-void dealingCardDisplay() {
+void hit_stand_display() {
+    /* rectangles for "hit me" and "stand" */
+    if (player_hand < 21) {
+        RectangleFilledWBorder(491, 110, 249, 120, RED, RED, 9);
+    }
+    RectangleFilledWBorder(491, 250, 249, 190, RED, RED, 9);
+
+    char hit[] = "HIT ME";
+    char stand[] = "STAND!";
+    int len = (int) strlen(hit);
+    int a = 550;
+    int i;
+    for (i=0; i<len; i++){
+        if (player_hand < 21) {
+            OutGraphicsCharFont22x40(a, 155, WHITE, BLACK, hit[i], 0);
+        }
+        OutGraphicsCharFont22x40(a, 330, WHITE, BLACK, stand[i], 0);
+        a = a + 20;
+    }
+}
+
+void dealingCardDisplay(int flag) {
     //Boxes to show Dealer and Player Hands
     RectangleFilledWBorder(71, 40, 400, 400, RED, BLACK, 9);
     RectangleFilledWBorder(91, 60, 360, 360, RED, BLACK, 9);
     //RectangleFilledWBorder(71, 250, 400, 190, RED, BLACK, 9);
 
-    char dealer[] = "   DEALING   ";
+    char player[] = "DEALING PLAYER";
+    char dealer[] = "DEALING DEALER";
     int len = (int) strlen(dealer);
-    int a = (235-(len/2)*20);
+    int a = (255-(len/2)*20);
     int i;
     for (i=0; i<len; i++){
-        OutGraphicsCharFont22x40(a, 240, WHITE, BLACK, dealer[i], 0);
+        if (flag == DEALING_DEALER)
+            OutGraphicsCharFont22x40(a, 240, WHITE, BLACK, dealer[i], 0);
+        else if (flag == DEALING_PLAYER)
+            OutGraphicsCharFont22x40(a, 240, WHITE, BLACK, player[i], 0);
         a = a + 20;
-    }
-    int delay_temp = 0;
-    int delay;
-    for (delay = 0; delay <20; delay++){
-        printf("dealing\n");
     }
 }
 
-void setup_play(){
-    
-    screenBorder();
-    homeButton(2);
-    hit_stand_display();
+void continue_display(void) {
+    /* rectangle for the continue button */
+    RectangleFilledWBorder(491, 110, 249, 120, RED, RED, 9);
 
-    dealingCardDisplay();
-    //Need to add "dealing card" display and then show hand values
-
-    screenBorder();
-    homeButton(2);
-    hit_stand_display();
-    hand_display();
-
-    if(player_hand == 21)
-        processResultScreen(WIN); // player won
-
-    while(1){
-        //Getting the point cordinates of touch release
-        //The points are set after the finger is released from the screen
-        Point p = GetRelease();
-    
-        //condition to determine which button is pressed
-        //Homescreen
-        if((p.x>=491)&&(p.x<=750)&&(p.y>=37)&&(p.y<=100)){
-            printf("Home Button Pressed from Manual");
-            homeScreen();
-        }
-        //Next page
-        else if ((p.x>=491)&&(p.x<=750)&&((p.y>120)&&(p.y<=235))){
-            printf("Hit me");
-            hitme();
-        }
-        //Previous page
-        else if((p.x>=491)&&(p.x<=750)&&((p.y>=240)&&(p.y<=440))){
-            printf("Stand");
-            dealerPlay();
-        }
+    char continueLine[] = "CONTINUE";
+    int len = (int) strlen(continueLine);
+    int a = 550;
+    int i;
+    for (i=0; i<len; i++){
+        OutGraphicsCharFont22x40(a, 155, WHITE, BLACK, continueLine[i], 0);
+        a = a + 20;
     }
-
 }
 
 void hand_display(){
-
     //Boxes to show Dealer and Player Hands
     RectangleFilledWBorder(71, 40, 400, 190, RED, BLACK, 9);
     RectangleFilledWBorder(71, 250, 400, 190, RED, BLACK, 9);
@@ -624,98 +611,118 @@ void hand_display(){
     }
 }
 
-void hit_stand_display() {
+void RenderSetupScreenDuringDealing(int flag) {
+    screenBorder();
+    homeButton(2);
+    dealingCardDisplay(flag);
+}
 
-    RectangleFilledWBorder(491, 110, 249, 120, RED, RED, 9);
-    RectangleFilledWBorder(491, 250, 249, 190, RED, RED, 9);
+void RenderSetupScreenAfterDealing(void) {
+    screenBorder();
+    homeButton(2);
+    hand_display();
+    continue_display();
+}
 
-    char hit[] = "HIT ME";
-    char stand[] = "STAND!";
-    int len = (int) strlen(hit);
-    int a = 550;
-    int i;
-    for (i=0; i<len; i++){
-        OutGraphicsCharFont22x40(a, 155, WHITE, BLACK, hit[i], 0);
-        OutGraphicsCharFont22x40(a, 330, WHITE, BLACK, stand[i], 0);
-        a = a + 20;
+int GetSetupScreenResponse(void) {
+    //Getting the point cordinates of touch release
+    //The points are set after the finger is released from the screen
+    Point p = GetRelease();
+
+    // Homescreen
+    if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
+        printf("home button pressed\n");
+        return MAIN_MENU_PRESSED;
+    }
+    // continue pressed
+    else if ((p.x>=491)&&(p.x<=750)&&((p.y>120)&&(p.y<=235))){
+        printf("continue pressed\n");
+        return CONTINUE_PRESSED;
+    }
+    else {
+        return 0xFFFFFFFF;
     }
 }
 
-void hitme() {
-    screenBorder();
-    homeButton(2);
-    
-    dealingCardDisplay();
-    //Need to add Dealing Cards Display and then show hand values
-    //TODO : Add code to Deal card - and get new hand value
-    
+void RenderPlayerTurnScreenBeforeDealing(void) {
     screenBorder();
     homeButton(2);
     hand_display();
+    hit_stand_display();
+}
 
-    if(player_hand<21)
-        hit_stand_display();
-    else if(player_hand==21)
-        processResultScreen(WIN); //player won    // return WIN;
-    else
-        dealerPlay();
-    
-
-    while(1){
-        //Getting the point cordinates of touch release
-        //The points are set after the finger is released from the screen
-        Point p = GetRelease();
-    
-        //condition to determine which button is pressed
-        //Homescreen
-        if((p.x>=491)&&(p.x<=750)&&(p.y>=37)&&(p.y<=100)){
-            printf("Home Button Pressed from Manual");
-            homeScreen();
-        }
-        //Next page
-        else if ((p.x>=491)&&(p.x<=750)&&((p.y>120)&&(p.y<=235))){
-            printf("Hit me");
-            hitme();
-        }
-        //Previous page
-        else if((p.x>=491)&&(p.x<=750)&&((p.y>=240)&&(p.y<=440))){
-            printf("Stand");
-            dealerPlay();
-        }
-    }
-} 
-
-void dealerPlay() {
+void RenderPlayerTurnScreenDuringDealing(void) {
     screenBorder();
     homeButton(2);
+    dealingCardDisplay(DEALING_PLAYER);
+}
 
-    dealingCardDisplay();
-    //TODO: add code to deal dealer's cards
-    //Need to add dealing cards display and then show hands
-    
+void DealCardToPlayer(void) {
+    /* NOTE: set to some dummy values for testing */
+    player_hand += 2;
+
+    /* NOTE: for now just poll a bit to mock the dealing & recognizing process */
+    int i;
+    for (i=0; i<50; i++) {
+        printf("dealing a card to player... player score is %d\n", player_hand);
+    }
+
+    /* TODO: actual card dealing & recognition */
+    return;
+}
+
+int GetPlayerTurnScreenResponse(void) {
+    //Getting the point cordinates of touch release
+    //The points are set after the finger is released from the screen
+    Point p = GetRelease();
+
+    // condition to determine which button is pressed
+    // Homescreen
+    if((p.x>=491)&&(p.x<=750)&&(p.y>=37)&&(p.y<=100)){
+        printf("home button pressed\n");
+        return MAIN_MENU_PRESSED;
+    }
+    // hit me
+    else if ((p.x>=491)&&(p.x<=750)&&((p.y>120)&&(p.y<=235))){
+        printf("Hit me\n");
+        return PLAYER_HIT_ME;
+    }
+    // stand
+    else if((p.x>=491)&&(p.x<=750)&&((p.y>=240)&&(p.y<=440))){
+        printf("Stand\n");
+        return PLAYER_STAND;
+    }
+    else {
+        return 0xFFFFFFFF;
+    }
+}
+
+void RenderDealerTurnScreen(void) {
     screenBorder();
     homeButton(2);
-    hand_display();
+    dealingCardDisplay(DEALING_DEALER);
+}
 
-    if((dealer_hand>=17)&&(dealer_hand<=21)){
-        if(player_hand > dealer_hand)
-            processResultScreen(WIN);
-        else if(player_hand < dealer_hand)
-            processResultScreen(LOSE);
-        else
-            processResultScreen(TIE);
+void DealCardToDealer(void) {
+    /* NOTE: set to some dummy values for testing */
+    dealer_hand += 4;
+
+    /* NOTE: for now just poll a bit to mock the dealing & recognizing process */
+    int i;
+    for (i=0; i<50; i++) {
+        printf("dealing a card to dealer... dealer score is %d\n", dealer_hand);
     }
-    else if(dealer_hand>21)
-        processResultScreen(WIN);//dealer loss
-    else if(dealer_hand==21)
-        processResultScreen(WIN);
-    else
-        dealerPlay();
+
+    /* TODO: actual card dealing & recognition */
+    return;
 }
 
 void RenderEnterPhoneNumberScreen(int* phone_num, int entry_pos) {
     /* render background */
     FillScreen(RED);
+
+    /* render the main menu button */
+    homeButton(1);
     
     /* render the instruction line */
     char instructionLine[] = {'P', 'l', 'e', 'a', 's', 'e', ' ', 'e', 'n', 't', 'e', 'r',
@@ -818,7 +825,10 @@ int GetPhoneNumberScreenResponse(void) {
         }
     }
     /* TODO: if main menu is pressed */
-    else if (0) {
+    else if((POfRelease.x>=491)
+            &&(POfRelease.x<=750)
+            &&(POfRelease.y>=37)
+            &&(POfRelease.y<=100)){
         return MAIN_MENU_PRESSED;
     }
     /* if clear is pressed */
@@ -844,7 +854,9 @@ int GetPhoneNumberScreenResponse(void) {
 void RenderResultScreen(int result) {
     /* render background */
     FillScreen(RED);
-    
+
+    /* render the main menu button */
+    homeButton(1);
     
     /* render the result notification */
     Circle(400, 200, 160, BLACK, ORANGE, 8);
@@ -910,8 +922,10 @@ int GetResultScreenResponse(void) {
              && POfRelease.y >= RESULT_SCREEN_BUTTON_INIT_Y && POfRelease.y < (RESULT_SCREEN_BUTTON_INIT_Y+RESULT_SCREEN_BUTTON_HEIGHT)) {
         return SEND_RESULT_TO_PHONE_PRESSED;
     }
-    // TODO: condition for main menu button pressed
-    else if(0) {
+    else if((POfRelease.x>=491)
+            &&(POfRelease.x<=750)
+            &&(POfRelease.y>=37)
+            &&(POfRelease.y<=100)){
         return MAIN_MENU_PRESSED;
     }
     else {
@@ -943,79 +957,19 @@ void RenderIllegalPhoneNumScreen(void) {
     }
 }
 
-void processIllegalPhoneNumScreen(void) {
-    RenderIllegalPhoneNumScreen();
-    while (1) {
-        Point POfRelease = GetRelease();
-        if (POfRelease.x>=300 && POfRelease.x<600
-            && POfRelease.y>=300 && POfRelease.y<380) {
-            processPhoneScreen();
-        }
+int GetIllegalPhoneNumScreenResponse(void) {
+    Point POfRelease = GetRelease();
+    if((POfRelease.x>=491)
+        &&(POfRelease.x<=750)
+        &&(POfRelease.y>=37)
+        &&(POfRelease.y<=100)){
+        return MAIN_MENU_PRESSED;
     }
-}
-
-void processResultScreen(int result) {
-    RenderResultScreen(result);
-    int response;
-    while (1) {
-        response = GetResultScreenResponse();
-        if (result == MAIN_MENU_PRESSED) {
-            homeScreen();
-        }
-        else if (response == START_AGAIN_PRESSED) {
-            setup_play();
-        }
-        else if (response == SEND_RESULT_TO_PHONE_PRESSED) {
-            // TODO:
-            processPhoneScreen();
-        }
-        else {}
+    else if (POfRelease.x>=300 && POfRelease.x<600
+        && POfRelease.y>=300 && POfRelease.y<380) {
+        return OK_PRESSED;
     }
-}
-
-void processPhoneScreen() {
-    int response;
-    int result = WIN;
-    int nextScreen = RESULT_SCREEN;
-    int phone_num[10];
-    int phone_num_entry_cursor_pos = 0;
-    while (1) {
-        RenderEnterPhoneNumberScreen(phone_num, phone_num_entry_cursor_pos);
-            response = GetPhoneNumberScreenResponse();
-            /* if a number is pressed */
-            if (response>=0 && response<=9) {
-                /* legal phonepad entry */
-                if (phone_num_entry_cursor_pos<10) {
-                    phone_num[phone_num_entry_cursor_pos] = response;
-                    phone_num_entry_cursor_pos += 1;
-                }
-                /* illegal entry */
-                else {
-                    printf("illegal entry detected; phone pad entry not registered!\n");
-                }
-            }
-            /* if "main menu" is pressed */
-            else if (response==MAIN_MENU_PRESSED) {
-                phone_num_entry_cursor_pos = 0;
-                nextScreen = HOME_SCREEN; // homescree();
-            }
-            /* if "clear" is pressed */
-            else if (response==CLEAR_PRESSED) {
-                phone_num_entry_cursor_pos = 0;
-            }
-            /* if "confirm" is pressed */
-            else if (response==CONFIRM_PRESSED) {
-                if (phone_num_entry_cursor_pos!=10) {
-                    printf("illegal phone number detected: less than 10 digits!\n");
-                    processIllegalPhoneNumScreen();
-                }
-                else {
-                    SendResponseToPhone(phone_num);
-                    phone_num_entry_cursor_pos = 0;
-                    homeScreen();
-                }
-            }
-            /* a "null" press */
-            else {}
+    else {
+        return 0xFFFFFFFF;
     }
 }
