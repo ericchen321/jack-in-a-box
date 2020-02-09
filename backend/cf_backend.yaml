@@ -78,6 +78,10 @@ Resources:
         ZipFile: |
           import json
           import boto3
+          import os
+          import urllib
+          from urllib import request, parse 
+          import base64
 
           def handler(event, context):
             event = json.loads(event['body'])
@@ -91,22 +95,42 @@ Resources:
                 'statusCode': 400,
                 'body': json.dumps("Malformed request. POST payload should contain username, phone number, and game_result.")
               }
+              
+            try:
+              twilio_number = os.environ['twilio_number']
+              twilio_sid = os.environ['twilio_sid']
+              twilio_auth_token = os.environ['twilio_auth_token']
+            except:
+              return {
+                'statusCode': 500,
+                'body': json.dumps("Server error: failed to retrieve twilio credentials.")
+              }
 
             dynamodb = boto3.resource('dynamodb')
             table = dynamodb.Table('391_Table')
             
             user = {}
             
+            # Messages for the Twilio text
+            win_message = "CPEN391 Black-jack: You won!"
+            loss_message = "CPEN391 Black-jack: You lost; try again!"
+            tie_message = "CPEN391 Black-jack: You tied!"
+            
             try: 
                 user = table.get_item(Key={"username": username})['Item']
                 
                 if game_result == "w":
                     user['wins'] = str(int(user['wins']) + 1)
+                    result_message = win_message
                 elif game_result == "l":
                     user['losses'] = str(int(user['losses']) + 1)
+                    result_message = loss_message
                 else:
                     user['ties'] = str(int(user['ties']) + 1)
-                    
+                    result_message = tie_message
+                
+                wlt = " W/L/T: " + user['wins'] + "/" + user['losses'] + "/" + user['ties']
+                result_message += wlt
             except Exception as e:
                 print(e)
                 user = {
@@ -119,10 +143,28 @@ Resources:
                 
             table.put_item(Item=user)
             
+            twilio_sms_url = "https://api.twilio.com/2010-04-01/Accounts/{}/Messages.json".format(twilio_sid)
+            twilio_params = {"To": phone_number, "From": twilio_number, "Body": result_message}
+            twilio_auth = "{}:{}".format(twilio_sid, twilio_auth_token)
+            base64string = base64.b64encode(twilio_auth.encode('utf-8'))
+            data = parse.urlencode(twilio_params).encode()
+
+            # prepare request
+            req = request.Request(twilio_sms_url)
+            req.add_header("Authorization", "Basic %s" % base64string.decode('ascii'))
+
+            # Send the request 
+            try: 
+              with request.urlopen(req, data) as f:
+                print("Twilio returned {}".format(str(f.read().decode('utf-8'))))
+            except Exception as e:
+              print(e)
+            
             return {
-                'statusCode': 200,
-                'body': json.dumps(user)
+              'statusCode': 200,
+              'body': json.dumps(user)
             }
+
       Description: "The Lambda function to handle our backend logic."
       FunctionName: 
         Ref: LambdaName
