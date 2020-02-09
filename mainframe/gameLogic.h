@@ -1,5 +1,5 @@
 /*
- * Author: Eric Chen, Jaskirat Singh, Paul Davies
+ * Author: Eric Chen, Jaskirat Singh
  * 
  * stuff that handle high-level gameplay mechanics
  */
