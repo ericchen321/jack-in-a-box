@@ -552,7 +552,7 @@ void continue_display(void) {
 
     char continueLine[] = "CONTINUE";
     int len = (int) strlen(continueLine);
-    int a = 550;
+    int a = 535;
     int i;
     for (i=0; i<len; i++){
         OutGraphicsCharFont22x40(a, 155, WHITE, BLACK, continueLine[i], 0);
@@ -578,16 +578,16 @@ void hand_display(){
         a = a + 20;
     }
 
-    a = (240-(len/2)*20) + 20;
+    a = (240-(len/2)*20) + 25;
     //Printing Dealer's cards
     for (i=0; i<dealer_card_num; i++) {
         OutGraphicsCharFont22x40(a, 132, YELLOW, BLACK, dealer_cards[i], 0);
         a += 50;
     }
-    a = (240-(len/2)*20) + 20;
+    a = (240-(len/2)*20) + 25;
     //Printing Player's cards
     for (i=0; i<player_card_num; i++) {
-        OutGraphicsCharFont22x40(a, 357, GREEN, BLACK, player_cards[i], 0);
+        OutGraphicsCharFont22x40(a, 362, GREEN, BLACK, player_cards[i], 0);
         a += 50;
     }
 
@@ -935,15 +935,15 @@ void RenderIllegalPhoneNumScreen(void) {
     char illegalPhoneNumLine1[] = " Not enough digits ";
     char illegalPhoneNumLine2[] = "Please enter again.";
     for (i=0; i< strlen(illegalPhoneNumLine1); i++) {
-        OutGraphicsCharFont10x14(275+10+i*15, 190, BLACK, BLACK, illegalPhoneNumLine1[i], 0);
-        OutGraphicsCharFont10x14(275+10+i*15, 220, BLACK, BLACK, illegalPhoneNumLine2[i], 0);
+        OutGraphicsCharFont10x14(260+10+i*15, 190, BLACK, BLACK, illegalPhoneNumLine1[i], 0);
+        OutGraphicsCharFont10x14(260+10+i*15, 220, BLACK, BLACK, illegalPhoneNumLine2[i], 0);
     }
 
     /* render OK */
     char OK[] = "OK";
     RectangleFilledWBorder(300, 280, 200, 80, BLACK, WHITE, 9);
     for (i=0; i<2; i++) {
-        OutGraphicsCharFont22x40(390+10+i*27, 295, BLACK, BLACK, OK[i], 0);
+        OutGraphicsCharFont22x40(370+10+i*27, 295, BLACK, BLACK, OK[i], 0);
     }
 }
 
