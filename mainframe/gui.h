@@ -186,9 +186,6 @@ int GetPhoneNumberScreenResponse(void);
  */
 int GetResultScreenResponse(void);
 
-/* send record to phone */
-void SendResponseToPhone(int* phone_num);
-
 /* state machine to process game logic from result
  * screen to phone number screen. Returns the next
  * screen
