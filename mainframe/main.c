@@ -23,13 +23,19 @@ void main() {
     int nextScreen = HOME_SCREEN;
     int phone_num[10];
     int phone_num_entry_cursor_pos = 0;
+    char* player_cards_ptr = player_cards;
+    char* dealer_cards_ptr = dealer_cards;
 
     // entry point to the game
     while (1) {
         // state WELCOME - home screen
         if (nextScreen == HOME_SCREEN) {
-            player_hand = PLAYER_HAND_INIT;
-            dealer_hand = DEALER_HAND_INIT;
+            player_cards_ptr = PLAYER_CARDS_INIT;
+            dealer_cards_ptr = DEALER_CARDS_INIT;
+            player_card_num = 0;
+            dealer_card_num = 0;
+            player_hand = 0;
+            dealer_hand = 0;
             RenderHomeScreen();
             response = GetHomeScreenResponse();
             if (response == READ_MANUAL_PRESSED) {
@@ -124,17 +130,10 @@ void main() {
             RenderSetupScreenAfterDealing();
             response = GetSetupScreenResponse();
             if (response == MAIN_MENU_PRESSED) {
-                player_hand = PLAYER_HAND_INIT;
-                dealer_hand = DEALER_HAND_INIT;
                 nextScreen = HOME_SCREEN;
             }
             else if (response == CONTINUE_PRESSED) {
-                if (player_hand == 21) {
-                    nextScreen = DEALER_TURN_SCREEN;
-                }
-                else {
-                    nextScreen = PLAYER_TURN_SCREEN;
-                }
+                nextScreen = PLAYER_TURN_SCREEN;
             }
             else {}
         }
@@ -151,6 +150,7 @@ void main() {
                 DealCardToPlayer();
             }
             else if (response == PLAYER_STAND) {
+                ScoreCalculation(PLAYER_SCORE);
                 nextScreen = DEALER_TURN_SCREEN;
             }
             else {}
@@ -158,6 +158,7 @@ void main() {
 
         // state DEALER_TURN - deal cards to the dealer and produce result
         else if (nextScreen == DEALER_TURN_SCREEN) {
+            ScoreCalculation(DEALER_SCORE);
             if (player_hand > 21) {
                 result = LOSE;
                 nextScreen = RESULT_SCREEN;
@@ -197,8 +198,12 @@ void main() {
                 nextScreen = HOME_SCREEN;
             }
             else if (response == START_AGAIN_PRESSED) {
-                player_hand = PLAYER_HAND_INIT;
-                dealer_hand = DEALER_HAND_INIT;
+                player_cards_ptr = PLAYER_CARDS_INIT;
+                dealer_cards_ptr = DEALER_CARDS_INIT;
+                player_card_num = 0;
+                dealer_card_num = 0;
+                player_hand = 0;
+                dealer_hand = 0;
                 nextScreen = SETUP_PLAYER_1ST_SCREEN;
             }
             else if (response == SEND_RESULT_TO_PHONE_PRESSED) {

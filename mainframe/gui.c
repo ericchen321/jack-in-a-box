@@ -507,9 +507,7 @@ int GetManualScreen3Response(void) {
 
 void hit_stand_display() {
     /* rectangles for "hit me" and "stand" */
-    if (player_hand < 21) {
-        RectangleFilledWBorder(491, 110, 249, 120, RED, RED, 9);
-    }
+    RectangleFilledWBorder(491, 110, 249, 120, RED, RED, 9);
     RectangleFilledWBorder(491, 250, 249, 190, RED, RED, 9);
 
     char hit[] = "HIT ME";
@@ -518,9 +516,7 @@ void hit_stand_display() {
     int a = 550;
     int i;
     for (i=0; i<len; i++){
-        if (player_hand < 21) {
-            OutGraphicsCharFont22x40(a, 155, WHITE, BLACK, hit[i], 0);
-        }
+        OutGraphicsCharFont22x40(a, 155, WHITE, BLACK, hit[i], 0);
         OutGraphicsCharFont22x40(a, 330, WHITE, BLACK, stand[i], 0);
         a = a + 20;
     }
@@ -528,31 +524,35 @@ void hit_stand_display() {
 
 void dealingCardDisplay(int flag) {
     //Boxes to show Dealer and Player Hands
-    RectangleFilledWBorder(71, 40, 400, 400, RED, BLACK, 9);
-    RectangleFilledWBorder(91, 60, 360, 360, RED, BLACK, 9);
+    //RectangleFilledWBorder(71, 40, 400, 400, RED, BLACK, 9);
+    //RectangleFilledWBorder(91, 60, 360, 360, RED, BLACK, 9);
     //RectangleFilledWBorder(71, 250, 400, 190, RED, BLACK, 9);
 
-    char player[] = "DEALING PLAYER";
-    char dealer[] = "DEALING DEALER";
-    int len = (int) strlen(dealer);
-    int a = (255-(len/2)*20);
+    RectangleFilledWBorder(491, 110, 249, 330, BLACK, RED, 9);
+
+    char dealing[] = "DEALING";
+    char player[] = "PLAYER!";
+    char dealer[] = "DEALER!";
+    int len = (int) strlen(dealing);
+    int a = (615-(len/2)*20);
     int i;
     for (i=0; i<len; i++){
+        OutGraphicsCharFont22x40(a, 240, WHITE, BLACK, dealing[i], 0);
         if (flag == DEALING_DEALER)
-            OutGraphicsCharFont22x40(a, 240, WHITE, BLACK, dealer[i], 0);
+            OutGraphicsCharFont22x40(a, 280, WHITE, BLACK, dealer[i], 0);
         else if (flag == DEALING_PLAYER)
-            OutGraphicsCharFont22x40(a, 240, WHITE, BLACK, player[i], 0);
+            OutGraphicsCharFont22x40(a, 280, WHITE, BLACK, player[i], 0);
         a = a + 20;
     }
 }
 
 void continue_display(void) {
     /* rectangle for the continue button */
-    RectangleFilledWBorder(491, 110, 249, 120, RED, RED, 9);
+    RectangleFilledWBorder(491, 110, 249, 120, RED, BLACK, 9);
 
     char continueLine[] = "CONTINUE";
     int len = (int) strlen(continueLine);
-    int a = 550;
+    int a = 535;
     int i;
     for (i=0; i<len; i++){
         OutGraphicsCharFont22x40(a, 155, WHITE, BLACK, continueLine[i], 0);
@@ -561,57 +561,42 @@ void continue_display(void) {
 }
 
 void hand_display(){
-    //Boxes to show Dealer and Player Hands
+    //Boxes to show Dealer and Player Cards
     RectangleFilledWBorder(71, 40, 400, 190, RED, BLACK, 9);
     RectangleFilledWBorder(71, 250, 400, 190, RED, BLACK, 9);
+    RectangleFilledWBorder(91, 120, 360, 60, WHITE, BLACK, 9);
+    RectangleFilledWBorder(91, 345, 360, 60, WHITE, BLACK, 9);
 
-    char dealer[] = "DEALER'S HAND: ";
-    char player[] = "PLAYER'S HAND: ";
+    char dealer[] = "DEALER'S CARDS: ";
+    char player[] = "PLAYER'S CARDS: ";
     int len = (int) strlen(dealer);
-    int a = (235-(len/2)*20);
+    int a = (240-(len/2)*20)+20;
     int i;
     for (i=0; i<len; i++){
-        OutGraphicsCharFont22x40(a, 115, WHITE, BLACK, dealer[i], 0);
-        OutGraphicsCharFont22x40(a, 345, WHITE, BLACK, player[i], 0);
+        OutGraphicsCharFont22x40(a, 80, WHITE, BLACK, dealer[i], 0);
+        OutGraphicsCharFont22x40(a, 310, WHITE, BLACK, player[i], 0);
         a = a + 20;
     }
 
-    //temp variables to print hand value
-    int player_hand_digits = 0;
-    int dealer_hand_digits = 0;
-    int player_hand_temp = player_hand;
-    int dealer_hand_temp = dealer_hand;
-
-    //calculating the number of digits in hand value : 1 or 2
-    while (player_hand_temp != 0) {
-        player_hand_temp /= 10;   
-        ++player_hand_digits;
+    a = (240-(len/2)*20) + 25;
+    //Printing Dealer's cards
+    for (i=0; i<dealer_card_num; i++) {
+        OutGraphicsCharFont22x40(a, 132, YELLOW, BLACK, dealer_cards[i], 0);
+        a += 50;
     }
-    while (dealer_hand_temp != 0) {
-        dealer_hand_temp /= 10;   
-        ++dealer_hand_digits;
+    a = (240-(len/2)*20) + 25;
+    //Printing Player's cards
+    for (i=0; i<player_card_num; i++) {
+        OutGraphicsCharFont22x40(a, 362, GREEN, BLACK, player_cards[i], 0);
+        a += 50;
     }
 
-    //Printing Dealer's Hand
-    if(dealer_hand_digits==1)
-        OutGraphicsCharFont22x40(a, 115, YELLOW, BLACK, (dealer_hand + '0'), 0);
-    else{
-        OutGraphicsCharFont22x40(a, 115, YELLOW, BLACK, ((dealer_hand/10) + '0' ), 0);
-        OutGraphicsCharFont22x40(a+20, 115, YELLOW, BLACK, ((dealer_hand - (dealer_hand/10)*10) + '0'), 0);
-    }
-
-    //Printing Player's Hand
-    if(player_hand_digits==1)
-        OutGraphicsCharFont22x40(a, 345, GREEN, BLACK, (player_hand + '0'), 0);
-    else{
-        OutGraphicsCharFont22x40(a, 345, GREEN, BLACK, ((player_hand/10) + '0'), 0);
-        OutGraphicsCharFont22x40(a+20, 345, GREEN, BLACK, ((player_hand - (player_hand/10)*10) + '0'), 0);
-    }
 }
 
 void RenderSetupScreenDuringDealing(int flag) {
     screenBorder();
     homeButton(2);
+    hand_display();
     dealingCardDisplay(flag);
 }
 
@@ -652,6 +637,7 @@ void RenderPlayerTurnScreenBeforeDealing(void) {
 void RenderPlayerTurnScreenDuringDealing(void) {
     screenBorder();
     homeButton(2);
+    hand_display();
     dealingCardDisplay(DEALING_PLAYER);
 }
 
@@ -684,6 +670,7 @@ int GetPlayerTurnScreenResponse(void) {
 void RenderDealerTurnScreen(void) {
     screenBorder();
     homeButton(2);
+    hand_display();
     dealingCardDisplay(DEALING_DEALER);
 }
 
@@ -823,16 +810,17 @@ int GetPhoneNumberScreenResponse(void) {
 
 void RenderResultScreen(int result) {
     /* render background */
-    FillScreen(RED);
+    FillScreen(BLACK);
+    screenBorder();
 
     /* render the main menu button */
     homeButton(1);
     
-    /* render the result notification */
-    Circle(400, 200, 160, BLACK, ORANGE, 8);
-    char winLine[] = {'Y', 'o', 'u', ' ', 'w', 'i', 'n', '!'};
-    char loseLine[] = {'G', 'a', 'm', 'e', ' ', 'o', 'v', 'e', 'r', '!'};
-    char tieLine[] = {'T', 'i', 'e', '!'};
+    /* render the result and score notification */
+    RectangleFilledWBorder(210, 140, 380, 200, WHITE, ORANGE, 8);
+    char winLine[] = "YOU WIN!";
+    char loseLine[] = "GAME OVER!";
+    char tieLine[] = "TIE!";
     int char_count;
     if (result==WIN) {
         char_count = 8;
@@ -846,14 +834,51 @@ void RenderResultScreen(int result) {
     int i;
     for (i=0; i<char_count; i++) {
         if (result==WIN) {
-            OutGraphicsCharFont22x40(300+i*28, 180, BLUE, WHITE, winLine[i], 0);
+            OutGraphicsCharFont22x40(300+i*28, 155, BLUE, WHITE, winLine[i], 0);
         }
         else if (result==LOSE) {
-            OutGraphicsCharFont22x40(270+i*28, 180, BLUE, WHITE, loseLine[i], 0);
+            OutGraphicsCharFont22x40(270+i*28, 155, BLUE, WHITE, loseLine[i], 0);
         }
         else {
-            OutGraphicsCharFont22x40(360+i*28, 180, BLUE, WHITE, tieLine[i], 0);
+            OutGraphicsCharFont22x40(360+i*28, 155, BLUE, WHITE, tieLine[i], 0);
         }
+    }
+    char dealerHandLine[] = "DEALER'S HAND: ";
+    char playerHandLine[] = "PLAYER'S HAND: ";
+    int len = (int) strlen(dealerHandLine);
+    int a = (390-(len/2)*22);
+    for (i=0; i<len; i++){
+        OutGraphicsCharFont22x40(a, 200, WHITE, BLACK, dealerHandLine[i], 0);
+        OutGraphicsCharFont22x40(a, 250, WHITE, BLACK, playerHandLine[i], 0);
+        a = a + 20;
+    }
+    //temp variables to print hand value
+    int player_hand_digits = 0;
+    int dealer_hand_digits = 0;
+    int player_hand_temp = player_hand;
+    int dealer_hand_temp = dealer_hand;
+    //calculating the number of digits in hand value : 1 or 2
+    while (player_hand_temp != 0) {
+        player_hand_temp /= 10;   
+        ++player_hand_digits;
+    }
+    while (dealer_hand_temp != 0) {
+        dealer_hand_temp /= 10;   
+        ++dealer_hand_digits;
+    }
+    //Printing Dealer's Hand
+    if(dealer_hand_digits==1)
+        OutGraphicsCharFont22x40(a, 200, YELLOW, BLACK, (dealer_hand + '0'), 0);
+    else{
+        OutGraphicsCharFont22x40(a, 200, YELLOW, BLACK, ((dealer_hand/10) + '0' ), 0);
+        OutGraphicsCharFont22x40(a+20, 200, YELLOW, BLACK, ((dealer_hand - (dealer_hand/10)*10) + '0'), 0);
+    }
+    //Printing Player's Hand
+    if(player_hand_digits==1)
+        OutGraphicsCharFont22x40(a, 250, GREEN, BLACK, (player_hand + '0'), 0);
+    else{
+        OutGraphicsCharFont22x40(a, 250, GREEN, BLACK, ((player_hand/10) + '0'), 0);
+        OutGraphicsCharFont22x40(a+20, 250, GREEN, BLACK, ((player_hand - (player_hand/10)*10) + '0'), 0);
     }
 
     /* render start again and send score to phone */
@@ -903,11 +928,6 @@ int GetResultScreenResponse(void) {
     }
 }
 
-void SendResponseToPhone(int* phone_num) {
-    // TODO: stub
-    return;
-}
-
 void RenderIllegalPhoneNumScreen(void) {
     RectangleFilledWBorder(200, 100, 400, 280, BLACK, GRAY, 9);
     /* render the prompt */
@@ -915,15 +935,15 @@ void RenderIllegalPhoneNumScreen(void) {
     char illegalPhoneNumLine1[] = " Not enough digits ";
     char illegalPhoneNumLine2[] = "Please enter again.";
     for (i=0; i< strlen(illegalPhoneNumLine1); i++) {
-        OutGraphicsCharFont10x14(275+10+i*15, 190, BLACK, BLACK, illegalPhoneNumLine1[i], 0);
-        OutGraphicsCharFont10x14(275+10+i*15, 220, BLACK, BLACK, illegalPhoneNumLine2[i], 0);
+        OutGraphicsCharFont10x14(260+10+i*15, 190, BLACK, BLACK, illegalPhoneNumLine1[i], 0);
+        OutGraphicsCharFont10x14(260+10+i*15, 220, BLACK, BLACK, illegalPhoneNumLine2[i], 0);
     }
 
     /* render OK */
     char OK[] = "OK";
     RectangleFilledWBorder(300, 280, 200, 80, BLACK, WHITE, 9);
     for (i=0; i<2; i++) {
-        OutGraphicsCharFont22x40(390+10+i*27, 295, BLACK, BLACK, OK[i], 0);
+        OutGraphicsCharFont22x40(370+10+i*27, 295, BLACK, BLACK, OK[i], 0);
     }
 }
 
