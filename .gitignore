@@ -25,3 +25,8 @@ mainframe/*
 !mainframe/*.vhd
 !mainframe/*.v
 !mainframe/*.sv
+
+// for DE1_Pi_comm_test, ignore all except .c and .py files
+DE1_Pi_comm_test/*
+!DE1_Pi_comm_test/*.c
+!DE1_Pi_comm_test/*.py

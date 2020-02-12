@@ -2,7 +2,7 @@ from adafruit_motorkit import MotorKit
 import RPi.GPIO as gpio
 import time
 gpio.setwarnings(False)
-kit = MotorKit()
+#kit = MotorKit() NOTE: nullify motoring for now
 gpio.setmode(gpio.BCM)
 gpio.setup(21,gpio.IN)
 preparePin = 21
@@ -39,30 +39,47 @@ def p():
         print('stopped')
         kit.motor4.throttle = 0.0
         return
+
+# return face value of card read
 def readcard():
-    # TODO: fill this out
+    # TODO: stub; for now, always return 12
+    return 12
 
 def main():
     try:
+        # set up ports
         gpio.setup(piin,gpio.IN)
         gpio.setup(piout,gpio.OUT)
         for i in cardout:
-            gpio.setup(i,gpio.OUT)    
+            gpio.setup(i,gpio.OUT)  
+  
         while (1):
+            # tell DE1 the Pi is ready
+            gpio.output(piout,gpio.LOW)
+
+            # wait for DE1 to issue DEAL
             print("Waiting for DE1 to ask")
             while(gpio.input(piin) == gpio.LOW):
-                pass
+                time.sleep(0.5)
             print("DE1 asks me to deal!")
+
+            # TODO: routine to deal card
+
+            # read card and issue card face value
             result = readcard()
-            print("Camera read is successful.")
+            print("Camera read: " + str(result))
             for j in range (6):
                 gpio.output(cardout[j], (result >> j) & 0x01)
+
+            # issue acknowledge to DE1
             gpio.output(piout,gpio.HIGH)
             print("Told DE1 the result and piout is high")
+
+            # wait for DE1 to acknowledge
             while(gpio.input(piin) == gpio.HIGH):
-                pass
+                time.sleep(0.5)
             print("DE1 got the result.")
-            gpio.output(piout,gpio.LOW)
+
     except Exception as e:
         print("Ending the program.")
         gpio.cleanup()
