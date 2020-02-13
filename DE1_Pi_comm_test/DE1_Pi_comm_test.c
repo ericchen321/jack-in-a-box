@@ -20,7 +20,12 @@ void main() {
     /* test successive card dealing */
     int i;
     for (i=0; i<10; i++) {
-        card_val = DealCard();
+        if (i%2==0) {
+            card_val = DealCard(PI_DEAL_TO_DEALER);
+        }
+        else {
+            card_val = DealCard(PI_DEAL_TO_PLAYER);
+        }
         printf("iteration: %d, card: %d\n", i, card_val);
     }
 }

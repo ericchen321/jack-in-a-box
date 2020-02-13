@@ -7,8 +7,10 @@ gpio.setmode(gpio.BCM)
 gpio.setup(21,gpio.IN)
 preparePin = 21
 piin = 1
-piout = 2
+piout_command = 2
 cardout = [3,4,5,6,7,8] # the first element would be least significant bit when outputting
+piin_dealerOrPlayer = 9
+
 def spit():
     start = time.time()
     kit.motor4.throttle = -1.0
@@ -49,19 +51,26 @@ def main():
     try:
         # set up ports
         gpio.setup(piin,gpio.IN)
-        gpio.setup(piout,gpio.OUT)
+        gpio.setup(piout_command,gpio.OUT)
         for i in cardout:
             gpio.setup(i,gpio.OUT)  
+        gpio.setup(piin_dealerOrPlayer,gpio.IN)
   
         while (1):
             # tell DE1 the Pi is ready
-            gpio.output(piout,gpio.LOW)
+            gpio.output(piout_command,gpio.LOW)
 
             # wait for DE1 to issue DEAL
             print("Waiting for DE1 to ask")
             while(gpio.input(piin) == gpio.LOW):
                 pass
             print("DE1 asks me to deal!")
+
+            # check to whom to deal
+            if (gpio.input(piin_dealerOrPlayer) == gpio.HIGH):
+                print("Dealing to DEALER!")
+            else:
+                print("Dealing to PLAYER!")
 
             # TODO: routine to deal card
 
@@ -72,8 +81,8 @@ def main():
                 gpio.output(cardout[j], (result >> j) & 0x01)
 
             # issue acknowledge to DE1
-            gpio.output(piout,gpio.HIGH)
-            print("Told DE1 the result and piout is high")
+            gpio.output(piout_command,gpio.HIGH)
+            print("Told DE1 the result and piout_command is high")
 
             # wait for DE1 to acknowledge
             while(gpio.input(piin) == gpio.HIGH):
