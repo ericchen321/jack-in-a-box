@@ -60,7 +60,7 @@ def main():
             # wait for DE1 to issue DEAL
             print("Waiting for DE1 to ask")
             while(gpio.input(piin) == gpio.LOW):
-                time.sleep(0.5)
+                pass
             print("DE1 asks me to deal!")
 
             # TODO: routine to deal card
@@ -77,7 +77,7 @@ def main():
 
             # wait for DE1 to acknowledge
             while(gpio.input(piin) == gpio.HIGH):
-                time.sleep(0.5)
+                pass
             print("DE1 got the result.")
 
     except Exception as e:
