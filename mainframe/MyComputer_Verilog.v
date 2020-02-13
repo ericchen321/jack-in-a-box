@@ -288,7 +288,8 @@ module MyComputer_Verilog (
 			.system_pll_ref_reset_reset      (0),       								// system_pll_ref_reset.reset
 			.gpio_singlein_export            (GPIO_0[34]),            //        gpio_singlein.export
 			.gpio_singleout_export           (GPIO_0[35]),           //       gpio_singleout.export
-			.gpio_sixin_export               (GPIO_0[5:0])  
+			.gpio_sixin_export               (GPIO_0[5:0]),  
+			.gpio_dealerorplayerout_export	 (GPIO_0[33])
 		);
 		
  

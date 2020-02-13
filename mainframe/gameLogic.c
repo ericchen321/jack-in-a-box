@@ -19,23 +19,23 @@ void DealCardToPlayer(void) {
     }
 #else
     /* actual card dealing & recognition */
-    int card_face_val = DealCard();
+    int card_face_val = DealCard(PI_DEAL_TO_PLAYER);
     switch (card_face_val)
     {
-    case (1):
-        player_cards[player_card_num] = 'A';
-        break;
-    case (11):
-        player_cards[player_card_num] = 'J';
-        break;
-    case (12):
-        player_cards[player_card_num] = 'Q';
-        break;
-    case (13):
-        player_cards[player_card_num] = 'K';
-    default:
-        player_cards[player_card_num] = (char)card_face_val;
-        break;
+        case (1):
+            player_cards[player_card_num] = 'A';
+            break;
+        case (11):
+            player_cards[player_card_num] = 'J';
+            break;
+        case (12):
+            player_cards[player_card_num] = 'Q';
+            break;
+        case (13):
+            player_cards[player_card_num] = 'K';
+        default:
+            player_cards[player_card_num] = (char)card_face_val + 0x30;
+            break;
     }
 #endif
     player_card_num += 1;
@@ -159,23 +159,23 @@ void DealCardToDealer(void) {
     }
 #else
     /* actual card dealing & recognition */
-    int card_face_val = DealCard();
+    int card_face_val = DealCard(PI_DEAL_TO_DEALER);
     switch (card_face_val)
     {
-    case (1):
-        dealer_cards[dealer_card_num] = 'A';
-        break;
-    case (11):
-        dealer_cards[dealer_card_num] = 'J';
-        break;
-    case (12):
-        dealer_cards[dealer_card_num] = 'Q';
-        break;
-    case (13):
-        dealer_cards[dealer_card_num] = 'K';
-    default:
-        dealer_cards[dealer_card_num] = (char)card_face_val;
-        break;
+        case (1):
+            dealer_cards[dealer_card_num] = 'A';
+            break;
+        case (11):
+            dealer_cards[dealer_card_num] = 'J';
+            break;
+        case (12):
+            dealer_cards[dealer_card_num] = 'Q';
+            break;
+        case (13):
+            dealer_cards[dealer_card_num] = 'K';
+        default:
+            dealer_cards[dealer_card_num] = (char)card_face_val + 0x30;
+            break;
     }
 #endif
     dealer_card_num += 1;

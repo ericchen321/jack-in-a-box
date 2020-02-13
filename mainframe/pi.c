@@ -4,7 +4,7 @@
 
 #include "pi.h"
 
-int DealCard(void) {
+int DealCard(char flag) {
     int card_val;
 
     // wait for Pi to get ready
@@ -13,9 +13,15 @@ int DealCard(void) {
     }
     printf("Pi is ready\n");
 
+    // set deal flag
+    PI_DEALER_OR_PLAYER_OUT = flag;
+    int i;
+    for (i=0; i<2; i++) {
+        printf("set dealer/player flag, poll a bit...\n");
+    }
+
     // issue read
     PI_SINGLEOUT = 0x01;
-    int i;
     for (i=0; i<2; i++) {
         printf("issued DEAL command, poll a bit...\n");
     }
