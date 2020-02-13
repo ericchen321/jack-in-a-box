@@ -16,6 +16,6 @@
  * read and return the card's face value;
  * A - 1, J, Q, K are 11-13
  */
-char DealCard(void);
+int DealCard(void);
 
 #endif /* PI_H_ */
