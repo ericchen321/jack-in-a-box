@@ -26,8 +26,8 @@
 /* data structures */
 extern int player_hand;//stores the players hand value, set by ScoreCalculation()
 extern int dealer_hand;//stores the dealers hand value, set by ScoreCalculation()
-extern char player_cards[10];//stores the players cards
-extern char dealer_cards[10];//stores the dealers cards
+extern char player_cards[10];//stores the players cards as ranks/A/J/Q/K
+extern char dealer_cards[10];//stores the dealers cards as ranks/A/J/Q/K
 extern int player_card_num;//stores the number of card being dealt to player
 extern int dealer_card_num;//stores the number of card being dealt to dealer
 

@@ -19,7 +19,24 @@ void DealCardToPlayer(void) {
     }
 #else
     /* actual card dealing & recognition */
-    player_cards[player_card_num] = DealCard();
+    int card_face_val = DealCard();
+    switch (card_face_val)
+    {
+    case (1):
+        player_cards[player_card_num] = 'A';
+        break;
+    case (11):
+        player_cards[player_card_num] = 'J';
+        break;
+    case (12):
+        player_cards[player_card_num] = 'Q';
+        break;
+    case (13):
+        player_cards[player_card_num] = 'K';
+    default:
+        player_cards[player_card_num] = (char)card_face_val;
+        break;
+    }
 #endif
     player_card_num += 1;
     return;
@@ -142,7 +159,24 @@ void DealCardToDealer(void) {
     }
 #else
     /* actual card dealing & recognition */
-    dealer_cards[dealer_card_num] = DealCard();
+    int card_face_val = DealCard();
+    switch (card_face_val)
+    {
+    case (1):
+        dealer_cards[dealer_card_num] = 'A';
+        break;
+    case (11):
+        dealer_cards[dealer_card_num] = 'J';
+        break;
+    case (12):
+        dealer_cards[dealer_card_num] = 'Q';
+        break;
+    case (13):
+        dealer_cards[dealer_card_num] = 'K';
+    default:
+        dealer_cards[dealer_card_num] = (char)card_face_val;
+        break;
+    }
 #endif
     dealer_card_num += 1;
     return;
