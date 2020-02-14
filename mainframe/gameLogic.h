@@ -9,7 +9,7 @@
 #define GAMELOGIC_H_
 
 /* for mock tests without actual motor & image rec */
-#define MOCK
+//#define MOCK
 
 // TODO: should change them to 0
 #ifdef MOCK
