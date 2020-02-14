@@ -131,15 +131,29 @@ Resources:
                 
                 wlt = " W/L/T: " + user['wins'] + "/" + user['losses'] + "/" + user['ties']
                 result_message += wlt
-            except Exception as e:
+            except Exception as e: # This situation will occur if there is a new user
                 print(e)
+                
                 user = {
                     "username": username,
                     "phone_number": phone_number,
-                    "wins": "1" if game_result == "w" else "0",
-                    "losses": "1" if game_result == "l" else "0",
-                    "ties": "1" if game_result == "t" else "0",
+                    "wins": "0",
+                    "losses": "0",
+                    "ties": "0"
                 }
+                
+                if game_result == "w":
+                    user['wins'] = str(int(user['wins']) + 1)
+                    result_message = win_message
+                elif game_result == "l":
+                    user['losses'] = str(int(user['losses']) + 1)
+                    result_message = loss_message
+                else:
+                    user['ties'] = str(int(user['ties']) + 1)
+                    result_message = tie_message
+                    
+                wlt = " W/L/T: " + user['wins'] + "/" + user['losses'] + "/" + user['ties']
+                result_message += wlt
                 
             table.put_item(Item=user)
             
@@ -164,6 +178,7 @@ Resources:
               'statusCode': 200,
               'body': json.dumps(user)
             }
+
 
       Description: "The Lambda function to handle our backend logic."
       FunctionName: 
