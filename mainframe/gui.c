@@ -305,7 +305,7 @@ void RenderHomeScreen(void) {
 int GetHomeScreenResponse(void) {
     //Getting the point cordinates of touch release
     //The points are set after the finger is released from the screen
-    Point p = GetRelease();
+    Point p = GetPress();
 
     //condition to determine which button is pressed
     if ((p.x >= 200) && (p.x <= 400) && (p.y>=250) && (p.y<=400)){
@@ -369,7 +369,7 @@ void RenderManualScreen0(void) {
 int GetManualScreen0Response(void) {
     //Getting the point cordinates of touch release
     //The points are set after the finger is released from the screen
-    Point p = GetRelease();
+    Point p = GetPress();
 
     //condition to determine which button is pressed
     if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
@@ -406,7 +406,7 @@ void RenderManualScreen1(void) {
 int GetManualScreen1Response(void) {
     //Getting the point cordinates of touch release
     //The points are set after the finger is released from the screen
-    Point p = GetRelease();
+    Point p = GetPress();
 
     //condition to determine which button is pressed
     //Homescreen
@@ -447,7 +447,7 @@ void RenderManualScreen2(void) {
 int GetManualScreen2Response(void) {
     //Getting the point cordinates of touch release
     //The points are set after the finger is released from the screen
-    Point p = GetRelease();
+    Point p = GetPress();
 
     //condition to determine which button is pressed
     //Homescreen
@@ -487,7 +487,7 @@ void RenderManualScreen3(void) {
 int GetManualScreen3Response(void) {
     //Getting the point cordinates of touch release
     //The points are set after the finger is released from the screen
-    Point p = GetRelease();
+    Point p = GetPress();
 
     //condition to determine which button is pressed
     //Homescreen
@@ -610,7 +610,7 @@ void RenderSetupScreenAfterDealing(void) {
 int GetSetupScreenResponse(void) {
     //Getting the point cordinates of touch release
     //The points are set after the finger is released from the screen
-    Point p = GetRelease();
+    Point p = GetPress();
 
     // Homescreen
     if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
@@ -644,7 +644,7 @@ void RenderPlayerTurnScreenDuringDealing(void) {
 int GetPlayerTurnScreenResponse(void) {
     //Getting the point cordinates of touch release
     //The points are set after the finger is released from the screen
-    Point p = GetRelease();
+    Point p = GetPress();
 
     // condition to determine which button is pressed
     // Homescreen
@@ -729,7 +729,7 @@ void RenderEnterPhoneNumberScreen(int* phone_num, int entry_pos) {
 }
 
 int GetPhoneNumberScreenResponse(void) {
-    Point POfRelease = GetRelease();
+    Point POfRelease = GetPress();
     /* if a press in the phonepad area */
     if (POfRelease.x >= PHONEPAD_INIT_X
         && POfRelease.x < PHONEPAD_INIT_X+3*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)
@@ -908,7 +908,7 @@ void RenderResultScreen(int result) {
 }
 
 int GetResultScreenResponse(void) {
-    Point POfRelease = GetRelease();
+    Point POfRelease = GetPress();
     if (POfRelease.x >= START_AGAIN_INIT_X && POfRelease.x < (START_AGAIN_INIT_X + RESULT_SCREEN_BUTTON_WIDTH)
         && POfRelease.y >= RESULT_SCREEN_BUTTON_INIT_Y && POfRelease.y < (RESULT_SCREEN_BUTTON_INIT_Y+RESULT_SCREEN_BUTTON_HEIGHT)) {
         return START_AGAIN_PRESSED;
@@ -948,7 +948,7 @@ void RenderIllegalPhoneNumScreen(void) {
 }
 
 int GetIllegalPhoneNumScreenResponse(void) {
-    Point POfRelease = GetRelease();
+    Point POfRelease = GetPress();
     if((POfRelease.x>=491)
         &&(POfRelease.x<=750)
         &&(POfRelease.y>=37)
