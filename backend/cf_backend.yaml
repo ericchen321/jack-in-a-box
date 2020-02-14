@@ -36,7 +36,6 @@ Resources:
     Properties:
       ApiKeyRequired: False
       AuthorizationType: NONE
-      # AuthorizerId: String
       HttpMethod: POST
       Integration: 
         IntegrationHttpMethod: POST
@@ -238,6 +237,47 @@ Resources:
       TableName:
         Ref: TableName
       Tags: 
+        - 
+          Key: "Use_Category"
+          Value: "CPEN391"
+
+  cloudfrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    DependsOn: apiGateway
+    Properties:
+      DistributionConfig:
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - DELETE
+            - POST
+            - GET
+            - OPTIONS
+            - PUT
+            - PATCH
+          Compress: false
+          ForwardedValues: 
+            QueryString: false 
+            Cookies:
+              Forward: none
+          TargetOriginId: 
+            Fn::Sub: "${apiGateway}Id"
+          ViewerProtocolPolicy: allow-all
+        Comment: "The CloudFront distribution used to redirect HTTP requests from the DE1 to the HTTPS ApiGateway."
+        Enabled: true
+        Origins: 
+          - DomainName: 
+              Fn::Sub: "${apiGateway}.execute-api.${Region}.amazonaws.com"
+            Id: 
+              Fn::Sub: "${apiGateway}Id"
+            OriginPath: "/call"
+            CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginKeepaliveTimeout: 5
+                OriginProtocolPolicy: https-only
+                OriginReadTimeout: 30
+      Tags:
         - 
           Key: "Use_Category"
           Value: "CPEN391"

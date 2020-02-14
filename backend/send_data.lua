@@ -7,7 +7,7 @@ wifi.sta.autoconnect(1)
 
 tmr.delay(5000000)
 
-HOST = "d8zdah4wk5t8c.cloudfront.net"
+HOST = "d1umgoqwy5q61i.cloudfront.net"
 
 -- sample_data = '{"username": "noob", "game_result": "t", "phone_number": "+17788469337"}'
 data = '{"username": "'..username..'", "game_result": "'..game_result..'", "phone_number": "'..phone_number..'"}'
