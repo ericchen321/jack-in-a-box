@@ -9,7 +9,9 @@ tmr.delay(5000000)
 
 HOST = "d8zdah4wk5t8c.cloudfront.net"
 
-sample_data = '{"username": "noob", "game_result": "t", "phone_number": "+17788469337"}'
+-- sample_data = '{"username": "noob", "game_result": "t", "phone_number": "+17788469337"}'
+data = '{"username": "'..username..'", "game_result": "'..game_result..'", "phone_number": "'..phone_number..'"}'
+
 
 function build_post_request(host, payload)
     request = "POST / HTTP/1.1\r\n"..
@@ -49,7 +51,7 @@ function main()
         print("Connected!")
         print(ip)
         -- Send data
-        send_data(sample_data)
+        send_data(data)
     end
 
 end
