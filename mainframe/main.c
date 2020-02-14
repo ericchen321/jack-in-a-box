@@ -14,6 +14,7 @@
 void main() {
     // TODO: initialization: initialize UART, touchscreen, GUI, game state variables, etc.
     Init_Touch();
+    Init_Wifi();
     int i;
     for (i=0; i<64; i++) {
         ProgramPalette(i, ColourPalletteData[i]);
@@ -241,7 +242,7 @@ void main() {
             /* if "confirm" is pressed */
             else if (response==CONFIRM_PRESSED) {
                 if (phone_num_entry_cursor_pos == 10) {
-                    SendResponseToPhone(phone_num);
+                    SendResponseToPhone(result, phone_num);
                     phone_num_entry_cursor_pos = 0;
                     nextScreen = HOME_SCREEN;
                 }

@@ -1,6 +1,7 @@
 #ifndef WIFI_H_
 #define WIFI_H_
-#endif
+
+#include "touchscreen.h"
 
 #define Wifi_Offset                      (volatile unsigned char *)(0x00000040) // from the RS232 port
 #define Wifi_ReceiverFifo                (*(volatile unsigned char *)((int)Wifi_Offset + (int)&RS232_ReceiverFifo))
@@ -15,3 +16,9 @@
 #define Wifi_ScratchReg                  (*(volatile unsigned char *)((int)Wifi_Offset + (int)&RS232_ScratchReg))
 #define Wifi_DivisorLatchLSB             (*(volatile unsigned char *)((int)Wifi_Offset + (int)&RS232_DivisorLatchLSB))
 #define Wifi_DivisorLatchMSB             (*(volatile unsigned char *)((int)Wifi_Offset + (int)&RS232_DivisorLatchMSB))
+
+/* initialize the WIFI chip
+ */
+void Init_Wifi(void);
+
+#endif

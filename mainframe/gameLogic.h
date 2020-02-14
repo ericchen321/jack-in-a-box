@@ -20,6 +20,9 @@
     #define DEALER_CARDS_INIT ""
 #endif
 
+#define WIN 0   // player win
+#define LOSE 1  // player lose
+#define TIE 2
 #define PLAYER_SCORE 0
 #define DEALER_SCORE 1
 
@@ -51,8 +54,9 @@ void DealCardToDealer(void);
 void ScoreCalculation(int flag);
 
 /* send win/lose to the given phone number;
+ * requires result being WIN, LOSE, or TIE
  * requires a valid 10-digit phone number
  */
-void SendResponseToPhone(int* phone_num);
+void SendResponseToPhone(int result, int* phone_num);
 
 #endif /* GAMELOGIC_H_ */

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include "wifi.h"
 
 void Init_Wifi(void) { 
     int divisor = (int)((50E6)/(115200 * 16)  );

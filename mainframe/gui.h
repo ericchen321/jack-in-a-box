@@ -66,9 +66,6 @@
 #define CONFIRM_PRESSED 12
 
 /* for the win/lose/tie screen */
-#define WIN 0   // player win
-#define LOSE 1  // player lose
-#define TIE 2
 #define RESULT_SCREEN_BUTTON_WIDTH   200
 #define RESULT_SCREEN_BUTTON_HEIGHT  100
 #define RESULT_SCREEN_BUTTON_BORDER_WIDTH 2
