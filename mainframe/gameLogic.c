@@ -4,6 +4,7 @@
 
 #include "gameLogic.h"
 #include "pi.h"
+#include "wifi.h"
 
 char player_cards[10] = PLAYER_CARDS_INIT;
 char dealer_cards[10] = DEALER_CARDS_INIT;
@@ -184,5 +185,9 @@ void DealCardToDealer(void) {
 
 void SendResponseToPhone(int* phone_num) {
     // TODO: stub
+    
+    // Using hardcoded values to test chip integration
+    putstringWifi( "username, phone_number, game_result = \"ben\", \"+17788469337\", \"w\"");
+    putstringWifi( "dofile(\"send_data.lua\")");
     return;
 }
