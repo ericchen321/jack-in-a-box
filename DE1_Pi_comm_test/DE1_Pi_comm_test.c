@@ -19,7 +19,7 @@ void main() {
     
     /* test successive card dealing */
     int i;
-    for (i=0; i<10; i++) {
+    for (i=0; i<5; i++) {
         if (i%2==0) {
             card_val = DealCard(PI_DEAL_TO_DEALER);
         }

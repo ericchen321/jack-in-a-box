@@ -11,6 +11,9 @@ piout_command = 2
 cardout = [3,4,5,6,7,8] # the first element would be least significant bit when outputting
 piin_dealerOrPlayer = 9
 
+# used for the mock game
+mock_cards = [1, 11, 1, 9, 1]  # A, Q, A, 9, A
+
 def spit():
     start = time.time()
     kit.motor4.throttle = -1.0
@@ -43,9 +46,10 @@ def p():
         return
 
 # return face value of card read
-def readcard():
-    # TODO: stub; for now, always return 12
-    return 12
+def readcard(mock_cards_counter):
+    # TODO: stub; for now, iterate through mock_cards[]
+    card_val = mock_cards[mock_cards_counter]
+    return card_val
 
 def main():
     try:
@@ -55,7 +59,10 @@ def main():
         for i in cardout:
             gpio.setup(i,gpio.OUT)  
         gpio.setup(piin_dealerOrPlayer,gpio.IN)
-  
+
+        # set up counter for array of mock dealt cards TODO: remove later
+        mock_cards_counter = 0
+
         while (1):
             # tell DE1 the Pi is ready
             gpio.output(piout_command,gpio.LOW)
@@ -75,7 +82,12 @@ def main():
             # TODO: routine to deal card
 
             # read card and issue card face value
-            result = readcard()
+            result = readcard(mock_cards_counter)
+            # TODO: remove the following after readcard implemented
+            mock_cards_counter = mock_cards_counter + 1
+            if mock_cards_counter>4:
+                mock_cards_counter = 0
+
             print("Camera read: " + str(result))
             for j in range (6):
                 gpio.output(cardout[j], (result >> j) & 0x01)
