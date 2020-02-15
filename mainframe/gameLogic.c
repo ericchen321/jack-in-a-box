@@ -206,6 +206,6 @@ void SendResponseToPhone(int result, int* phone_num) {
         
     /* send the result to the chip */
     putstringWifi(string_to_wifi_chip);
-    putstringWifi( "dofile(\"send_data.lua\")");
+    putstringWifi( "dofile(\"send_data_new.lua\")");
     return;
 }
