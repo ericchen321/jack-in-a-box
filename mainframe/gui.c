@@ -676,136 +676,115 @@ void RenderDealerTurnScreen(void) {
 
 void RenderEnterPhoneNumberScreen(int* phone_num, int entry_pos) {
     /* render background */
-    FillScreen(RED);
+    FillScreen(BLACK);
+    RectangleFilledWBorder(31, 0, 750, 479, RED, BLACK, 9);
+    //Inner Red Border
+    RectangleFilledWBorder(51, 20, 710, 439, RED, BLACK, 9);
 
-    /* render the main menu button */
-    homeButton(1);
-    
     /* render the instruction line */
-    char instructionLine[] = {'P', 'l', 'e', 'a', 's', 'e', ' ', 'e', 'n', 't', 'e', 'r',
-                                ' ', 'y', 'o', 'u', 'r', ' ', 'p', 'h', 'o', 'n', 'e', ' ',
-                                'n', 'u', 'm', 'b', 'e', 'r', ':'};
+    char instructionLine[] = "PLEASE ENTER YOUR PHONE NUMBER";
     int i;
-    int x=150; int y=50;
+    int x=180; int y=50;
     for (i=0; i<31; i++) {
         OutGraphicsCharFont10x14(x, y, WHITE, WHITE, instructionLine[i], 0);
         x+= 15;
     }
 
     /* render the entry box */
-    RectangleFilledWBorder(ENTRY_BOX_UL_X, ENTRY_BOX_UL_Y, ENTRY_BOX_WIDTH, ENTRY_BOX_HEIGHT, BROWN, ORANGE, ENTRY_BOX_BORDER_WIDTH);
+    int x_intend = 165;
+    for(i=0; i<10; i++){
+        if((i==3) || (i==6)){
+            OutGraphicsCharFont22x40(x_intend+5, 80, RED, BLACK, '-', 0);
+            x_intend += 40;
+        }
+        RectangleFilledWBorder(x_intend, 80, 30, 50, RED, ORANGE, 4);
+        x_intend += 40;
+    }
+    x_intend = 170;
     for (i=0; i<entry_pos; i++) {
-        OutGraphicsCharFont10x14((ENTRY_BOX_UL_X + ENTRY_BOX_BORDER_WIDTH + 20 + 12*i), (ENTRY_BOX_UL_Y + ENTRY_BOX_BORDER_WIDTH + 4), BLACK, WHITE, (phone_num[i] + 0x30), 0);
-    }
+        if((i==3) || (i==6))
+            x_intend += 40;
+        OutGraphicsCharFont22x40( x_intend, 85 , BLACK, ORANGE, (phone_num[i] + 0x30), 0);
+        x_intend += 40;
 
-    /* render the phone pad */
-    int num=1;
-    char numbers[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-    for (y=PHONEPAD_INIT_Y; num>0; y+=(PHONEPAD_BUTTON_HEIGHT+PHONEPAD_BUTTON_SEPARATION_Y)) {
-        if (num>9) {
-            num = 0;
-            RectangleFilledWBorder(PHONEPAD_INIT_X+PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X, y, PHONEPAD_BUTTON_WIDTH, PHONEPAD_BUTTON_HEIGHT, BLACK, WHITE, 2);
-            OutGraphicsCharFont22x40(PHONEPAD_INIT_X+PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X+PHONEPAD_BUTTON_BORDER_WIDTH+5, y+PHONEPAD_BUTTON_BORDER_WIDTH+2, BLACK, BLACK, numbers[num], 0);
-            break;
-        }
-        for (x=PHONEPAD_INIT_X; x<PHONEPAD_INIT_X+3*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X); x+=(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)) {
-            RectangleFilledWBorder(x, y, PHONEPAD_BUTTON_WIDTH, PHONEPAD_BUTTON_HEIGHT, BLACK, WHITE, 2);
-            OutGraphicsCharFont22x40(x+PHONEPAD_BUTTON_BORDER_WIDTH+5, y+PHONEPAD_BUTTON_BORDER_WIDTH+2, BLACK, BLACK, numbers[num], 0);
-            num += 1;
+    }
+    
+    //Number pad boxes
+    int j;
+    for(i=250; i<=450; i += 100 ){
+        for( j=140; j<=280; j += 70){
+            RectangleFilledWBorder (i ,j, 100, 70, RED, BLACK, 9);
         }
     }
+    RectangleFilledWBorder (350 ,350, 100, 70, RED, BLACK, 9);
+
+    //Filling in the numbers
+    OutGraphicsCharFont22x40(285, 155, WHITE, BLACK, '1', 0);
+    OutGraphicsCharFont22x40(385, 155, WHITE, BLACK, '2', 0);
+    OutGraphicsCharFont22x40(485, 155, WHITE, BLACK, '3', 0);
+    OutGraphicsCharFont22x40(285, 225, WHITE, BLACK, '4', 0);
+    OutGraphicsCharFont22x40(385, 225, WHITE, BLACK, '5', 0);
+    OutGraphicsCharFont22x40(485, 225, WHITE, BLACK, '6', 0);
+    OutGraphicsCharFont22x40(285, 290, WHITE, BLACK, '7', 0);
+    OutGraphicsCharFont22x40(385, 290, WHITE, BLACK, '8', 0);
+    OutGraphicsCharFont22x40(485, 290, WHITE, BLACK, '9', 0);
+    OutGraphicsCharFont22x40(385, 365, WHITE, BLACK, '0', 0);
 
     /* render the clear and confirm button */
-    char clearLine[] = {'C', 'L', 'E', 'A', 'R'};
-    char confirmLine[] = {'C', 'O', 'N', 'F', 'I', 'R', 'M'};
-    RectangleFilledWBorder(CLEAR_INIT_X, CONFIRM_AND_CLEAR_INIT_Y, CONFIRM_AND_CLEAR_WIDTH, CONFIRM_AND_CLEAR_HEIGHT, BLACK, SILVER, CONFIRM_AND_CLEAR_BORDER_WIDTH);
-    for (i=0; i<5; i++) {
-        OutGraphicsCharFont22x40(CLEAR_INIT_X+CONFIRM_AND_CLEAR_BORDER_WIDTH+25+i*25, CONFIRM_AND_CLEAR_INIT_Y+CONFIRM_AND_CLEAR_BORDER_WIDTH+4, BLACK, WHITE, clearLine[i], 0);
-    }
-    RectangleFilledWBorder(CONFIRM_INIT_X, CONFIRM_AND_CLEAR_INIT_Y, CONFIRM_AND_CLEAR_WIDTH, CONFIRM_AND_CLEAR_HEIGHT, BLACK, SILVER, CONFIRM_AND_CLEAR_BORDER_WIDTH);
-    for (i=0; i<7; i++) {
-        OutGraphicsCharFont22x40(CONFIRM_INIT_X+CONFIRM_AND_CLEAR_BORDER_WIDTH+8+i*25, CONFIRM_AND_CLEAR_INIT_Y+CONFIRM_AND_CLEAR_BORDER_WIDTH+4, BLACK, WHITE, confirmLine[i], 0);
+    char clearLine[] = "CLEAR";
+    char confirmLine[] = "CONFIRM";
+    RectangleFilledWBorder(71, 140, 169, 280, RED, ORANGE, 9);
+    RectangleFilledWBorder(560, 140, 179, 280, RED, ORANGE, 9);
+    x_intend = 100;
+    for(i=0; i<7; i++){
+        if(i<5)
+            OutGraphicsCharFont22x40(x_intend, 280, BLACK, ORANGE, clearLine[i], 1);
+        OutGraphicsCharFont22x40(x_intend+480, 280, BLACK, ORANGE, confirmLine[i] ,1);
+        x_intend += 20;
     }
 }
 
 int GetPhoneNumberScreenResponse(void) {
     Point POfRelease = GetPress();
     /* if a press in the phonepad area */
-    if (POfRelease.x >= PHONEPAD_INIT_X
-        && POfRelease.x < PHONEPAD_INIT_X+3*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)
-        && POfRelease.y >= PHONEPAD_INIT_Y
-        && POfRelease.y < PHONEPAD_INIT_Y+4*(PHONEPAD_BUTTON_HEIGHT+PHONEPAD_BUTTON_SEPARATION_Y)) {
-        /* if 1, 2, 3 pressed */
-        if (POfRelease.y < PHONEPAD_INIT_Y+1*(PHONEPAD_BUTTON_HEIGHT+PHONEPAD_BUTTON_SEPARATION_Y)) {
-            if (POfRelease.x < (int) PHONEPAD_INIT_X+1*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)-0.5*PHONEPAD_BUTTON_SEPARATION_X) {
-                return 1;
-            }
-            else if (POfRelease.x < (int) PHONEPAD_INIT_X+2*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)-0.5*PHONEPAD_BUTTON_SEPARATION_X) {
-                return 2;
-            }
-            else if (POfRelease.x < (int) PHONEPAD_INIT_X+3*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)) {
-                return 3;
-            }
-        }
-        /* if 4, 5, 6 pressed */
-        else if (POfRelease.y < PHONEPAD_INIT_Y+2*(PHONEPAD_BUTTON_HEIGHT+PHONEPAD_BUTTON_SEPARATION_Y)) {
-            if (POfRelease.x < (int) PHONEPAD_INIT_X+1*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)-0.5*PHONEPAD_BUTTON_SEPARATION_X) {
-                return 4;
-            }
-            else if (POfRelease.x < (int) PHONEPAD_INIT_X+2*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)-0.5*PHONEPAD_BUTTON_SEPARATION_X) {
-                return 5;
-            }
-            else if (POfRelease.x < (int) PHONEPAD_INIT_X+3*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)) {
-                return 6;
-            }
-        }
-        /* if 7, 8, 9 pressed */
-        else if (POfRelease.y < PHONEPAD_INIT_Y+3*(PHONEPAD_BUTTON_HEIGHT+PHONEPAD_BUTTON_SEPARATION_Y)) {
-            if (POfRelease.x < (int) PHONEPAD_INIT_X+1*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)-0.5*PHONEPAD_BUTTON_SEPARATION_X) {
-                return 7;
-            }
-            else if (POfRelease.x < (int) PHONEPAD_INIT_X+2*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)-0.5*PHONEPAD_BUTTON_SEPARATION_X) {
-                return 8;
-            }
-            else if (POfRelease.x < (int) PHONEPAD_INIT_X+3*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)) {
-                return 9;
-            }
-        }
-        /* if 0 pressed */
-        else if (POfRelease.x >= PHONEPAD_INIT_X+1*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)
-                 && POfRelease.x < PHONEPAD_INIT_X+2*(PHONEPAD_BUTTON_WIDTH+PHONEPAD_BUTTON_SEPARATION_X)) {
-            return 0;
-        }
-        /* if "null" press */
-        else {
-            return 0xFFFFFFFF;
-        }
+    if (POfRelease.x >= 250 && POfRelease.x <= 550 && POfRelease.y >= 140 && POfRelease.y <= 209) {
+        if (POfRelease.x < 350 ) 
+            return 1;
+        else if (POfRelease.x < 450) 
+            return 2;
+        else
+            return 3;
     }
-    /* TODO: if main menu is pressed */
-    else if((POfRelease.x>=491)
-            &&(POfRelease.x<=750)
-            &&(POfRelease.y>=37)
-            &&(POfRelease.y<=100)){
-        return MAIN_MENU_PRESSED;
+    else if (POfRelease.x >= 250 && POfRelease.x <= 550 && POfRelease.y >= 210 && POfRelease.y <= 279) {
+        if (POfRelease.x < 350 ) 
+            return 4;
+        else if (POfRelease.x < 450) 
+            return 5;
+        else
+            return 6;
     }
+    else if (POfRelease.x >= 250 && POfRelease.x <= 550 && POfRelease.y >= 280 && POfRelease.y <= 349) {
+        if (POfRelease.x < 350 ) 
+            return 7;
+        else if (POfRelease.x < 450) 
+            return 8;
+        else
+            return 9;
+    }
+    else if (POfRelease.x >= 350 && POfRelease.x <= 450 && POfRelease.y >= 350 && POfRelease.y <= 420) 
+        return 0;
+          
     /* if clear is pressed */
-    else if (POfRelease.x >= CLEAR_INIT_X
-             && POfRelease.x < CLEAR_INIT_X+CONFIRM_AND_CLEAR_WIDTH
-             && POfRelease.y >= CONFIRM_AND_CLEAR_INIT_Y
-             && POfRelease.y < CONFIRM_AND_CLEAR_INIT_Y+CONFIRM_AND_CLEAR_HEIGHT) {
+    else if (POfRelease.x >= 71 && POfRelease.x <= 240 && POfRelease.y >= 140 && POfRelease.y <= 420)
         return CLEAR_PRESSED;
-    }
+
     /* if confirm is pressed */
-    else if (POfRelease.x >= CONFIRM_INIT_X
-             && POfRelease.x < CONFIRM_INIT_X+CONFIRM_AND_CLEAR_WIDTH
-             && POfRelease.y >= CONFIRM_AND_CLEAR_INIT_Y
-             && POfRelease.y < CONFIRM_AND_CLEAR_INIT_Y+CONFIRM_AND_CLEAR_HEIGHT) {
+    else if (POfRelease.x >= 560 && POfRelease.x <= 739 && POfRelease.y >= 140 && POfRelease.y <= 420) 
         return CONFIRM_PRESSED;
-    }
+
     /* no buttons pressed */
-    else {
+    else 
         return 0xFFFFFFFF;
-    }
 }
 
 void RenderResultScreen(int result) {
