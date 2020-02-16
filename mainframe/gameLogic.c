@@ -27,6 +27,9 @@ void DealCardToPlayer(void) {
         case (1):
             player_cards[player_card_num] = 'A';
             break;
+        case (10):
+            player_cards[player_card_num] = 'T';
+            break;
         case (11):
             player_cards[player_card_num] = 'J';
             break;
@@ -73,6 +76,8 @@ void ScoreCalculation(int flag) {
             temp_player[i]=10;
         else if (player_cards[i]=='Q')
             temp_player[i]=10;
+        else if (player_cards[i]=='T')
+            temp_player[i]=10;
         else{
             temp_player[i]=1;
             ace_player++;
@@ -100,6 +105,8 @@ void ScoreCalculation(int flag) {
         else if (dealer_cards[i]=='K')
             temp_dealer[i]=10;
         else if (dealer_cards[i]=='Q')
+            temp_dealer[i]=10;
+        else if (player_cards[i]=='T')
             temp_dealer[i]=10;
         else{
             temp_dealer[i]=1;
@@ -162,10 +169,14 @@ void DealCardToDealer(void) {
 #else
     /* actual card dealing & recognition */
     int card_face_val = DealCard(PI_DEAL_TO_DEALER);
+    printf("card's face value: %d\n", card_face_val);
     switch (card_face_val)
     {
         case (1):
             dealer_cards[dealer_card_num] = 'A';
+            break;
+        case (10):
+            dealer_cards[dealer_card_num] = 'T';
             break;
         case (11):
             dealer_cards[dealer_card_num] = 'J';
