@@ -6,9 +6,9 @@ gpio.setwarnings(False)
 gpio.setmode(gpio.BCM)
 gpio.setup(21,gpio.IN)
 preparePin = 21
-piin = 1
-piout_command = 2
-cardout = [3,4,5,6,7,8] # the first element would be least significant bit when outputting
+piin = 12
+piout_command = 17
+cardout = [27,4,5,6,7,8] # the first element would be least significant bit when outputting
 piin_dealerOrPlayer = 9
 
 # used for the mock game
