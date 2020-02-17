@@ -36,3 +36,6 @@ mainframe/*
 DE1_Pi_comm_test/*
 !DE1_Pi_comm_test/*.c
 !DE1_Pi_comm_test/*.py
+
+// Python interpreter files
+*.pyc
