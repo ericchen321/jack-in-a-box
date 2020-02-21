@@ -39,3 +39,14 @@ DE1_Pi_comm_test/*
 
 // Python interpreter files
 *.pyc
+
+// training data set, trained models
+motor_and_img_rcog/pm_templates/
+motor_and_img_rcog/pm_templates_old/
+motor_and_img_rcog/training_model/
+motor_and_img_rcog/test/
+motor_and_img_rcog/training_set/
+motor_and_img_rcog/*.jpg
+motor_and_img_rcog/*.jpeg
+motor_and_img_rcog/CNNPOKER2.model
+motor_and_img_rcog/image_classifier
