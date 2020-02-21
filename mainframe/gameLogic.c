@@ -38,6 +38,7 @@ void DealCardToPlayer(void) {
             break;
         case (13):
             player_cards[player_card_num] = 'K';
+            break;
         default:
             player_cards[player_card_num] = (char)card_face_val + 0x30;
             break;
@@ -186,6 +187,7 @@ void DealCardToDealer(void) {
             break;
         case (13):
             dealer_cards[dealer_card_num] = 'K';
+            break;
         default:
             dealer_cards[dealer_card_num] = (char)card_face_val + 0x30;
             break;
