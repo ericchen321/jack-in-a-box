@@ -674,6 +674,33 @@ void RenderDealerTurnScreen(void) {
     dealingCardDisplay(DEALING_DEALER);
 }
 
+void RenderDealerTurnWaitRespondScreen(void) {
+    screenBorder();
+    homeButton(2);
+    hand_display();
+    continue_display();
+}
+
+int GetDealerTurnWaitPlayerRespondScreenResponse(void) {
+    //Getting the point cordinates of touch release
+    //The points are set after the finger is released from the screen
+    Point p = GetPress();
+
+    // Homescreen
+    if((p.x>=570)&&(p.x<=760)&&(p.y>=20)&&(p.y<=110)){
+        printf("home button pressed\n");
+        return MAIN_MENU_PRESSED;
+    }
+    // continue pressed
+    else if ((p.x>=491)&&(p.x<=750)&&((p.y>120)&&(p.y<=235))){
+        printf("continue pressed\n");
+        return CONTINUE_PRESSED;
+    }
+    else {
+        return 0xFFFFFFFF;
+    }
+}
+
 void RenderEnterPhoneNumberScreen(int* phone_num, int entry_pos) {
     /* render background */
     FillScreen(BLACK);

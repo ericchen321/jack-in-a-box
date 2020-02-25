@@ -125,10 +125,10 @@ void main() {
         else if (nextScreen == SETUP_PLAYER_2ND_SCREEN) {
             RenderSetupScreenDuringDealing(DEALING_PLAYER);
             DealCardToPlayer();
-            nextScreen = SETUP_WAIT_PLAYER_RESPOND;
+            nextScreen = SETUP_WAIT_PLAYER_RESPOND_SCREEN;
         }
 
-        else if (nextScreen == SETUP_WAIT_PLAYER_RESPOND) {
+        else if (nextScreen == SETUP_WAIT_PLAYER_RESPOND_SCREEN) {
             RenderSetupScreenAfterDealing();
             response = GetSetupScreenResponse();
             if (response == MAIN_MENU_PRESSED) {
@@ -163,7 +163,7 @@ void main() {
             ScoreCalculation(DEALER_SCORE);
             if (player_hand > 21) {
                 result = LOSE;
-                nextScreen = RESULT_SCREEN;
+                nextScreen = DEALER_TURN_WAIT_PLAYER_RESPOND_SCREEN;
             }
             else if (dealer_hand < 17) {
                 RenderDealerTurnScreen();
@@ -176,12 +176,25 @@ void main() {
                     result = TIE;
                 else
                     result = LOSE;
-                nextScreen = RESULT_SCREEN;
+                nextScreen = DEALER_TURN_WAIT_PLAYER_RESPOND_SCREEN;
             }
             else {
                 result = WIN;
+                nextScreen = DEALER_TURN_WAIT_PLAYER_RESPOND_SCREEN;
+            }
+        }
+
+        // state DEALER_TURN_WAIT_PLAYER_RESPOND - display all cards to player before showing result
+        else if (nextScreen == DEALER_TURN_WAIT_PLAYER_RESPOND_SCREEN) {
+            RenderDealerTurnWaitRespondScreen();
+            response = GetDealerTurnWaitPlayerRespondScreenResponse();
+            if (response == MAIN_MENU_PRESSED) {
+                nextScreen = HOME_SCREEN;
+            }
+            else if (response == CONTINUE_PRESSED) {
                 nextScreen = RESULT_SCREEN;
             }
+            else {}
         }
 
         // state SHOW_RESULT - allow user to play again, or send result, or go to home screen

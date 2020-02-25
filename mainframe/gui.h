@@ -18,10 +18,11 @@
 #define SETUP_PLAYER_1ST_SCREEN 7
 #define SETUP_DEALER_SCREEN 8
 #define SETUP_PLAYER_2ND_SCREEN 9
-#define SETUP_WAIT_PLAYER_RESPOND 10
+#define SETUP_WAIT_PLAYER_RESPOND_SCREEN 10
 #define PLAYER_TURN_SCREEN 11
 #define DEALER_TURN_SCREEN 12
-#define ILLEGAL_PHONE_NUM_SCREEN 13
+#define DEALER_TURN_WAIT_PLAYER_RESPOND_SCREEN 13
+#define ILLEGAL_PHONE_NUM_SCREEN 14
 
 /* for the home screen */
 #define READ_MANUAL_PRESSED 0
@@ -35,7 +36,7 @@
 #define DEALING_PLAYER 0
 #define DEALING_DEALER 1
 
-/* for the setup screen(s) */
+/* for the setup screen(s) and dealer's turn screen(s) */
 #define CONTINUE_PRESSED 0
 
 /* for player turn screen */
@@ -158,6 +159,15 @@ int GetPlayerTurnScreenResponse(void);
 /* render the screen during a dealer's turn
  */
 void RenderDealerTurnScreen(void);
+
+/* render the screen after a dealer's turn
+ */
+void RenderDealerTurnWaitRespondScreen(void);
+
+/* get response from the screen after a dealer's
+ * turn
+ */
+int GetDealerTurnWaitPlayerRespondScreenResponse(void);
 
 /* render the screen for phone
  * number entry
