@@ -114,18 +114,18 @@ void ScoreCalculation(int flag) {
             ace_dealer++;
         }
     }
-    printf("outisde both the forloops\n");
+    //printf("outisde both the forloops\n");
     int score_a, score_b;
     if(flag == PLAYER_SCORE){
         score_a = 0;
         score_b = 0;
         for(i=0; i<player_card_num; i++){
             score_a +=temp_player[i];
-            printf("temp_player of %d : %d\n", i, temp_player[i]);
+            //printf("temp_player of %d : %d\n", i, temp_player[i]);
         }
         if(ace_player==0){
             player_hand = score_a;
-            printf("Player score_a: %d\n", score_a);
+            //printf("Player score_a: %d\n", score_a);
         }
         else {
             score_b = score_a + 10;
@@ -135,14 +135,14 @@ void ScoreCalculation(int flag) {
             else 
                 player_hand = score_a;
         }
-        printf("Players: %d\n", player_hand);
+        //printf("Players: %d\n", player_hand);
     }
     else {
         score_a = 0;
         score_b = 0;
         for(i=0; i<dealer_card_num; i++){
             score_a +=temp_dealer[i];
-            printf("temp_dealer of %d : %d\n", i, temp_dealer[i]);
+            //printf("temp_dealer of %d : %d\n", i, temp_dealer[i]);
         }   
         if(ace_dealer==0){
             dealer_hand = score_a;
@@ -155,7 +155,7 @@ void ScoreCalculation(int flag) {
             else 
                 dealer_hand = score_a;
         }
-        printf("Dealers: %d\n", dealer_hand);
+        //printf("Dealers: %d\n", dealer_hand);
     }   
 }
 
