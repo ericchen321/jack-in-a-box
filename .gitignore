@@ -50,3 +50,8 @@ motor_and_img_rcog/*.jpg
 motor_and_img_rcog/*.jpeg
 motor_and_img_rcog/CNNPOKER2.model
 motor_and_img_rcog/image_classifier
+
+// test files
+tests/*
+!tests/*.h
+!tests/*.c
