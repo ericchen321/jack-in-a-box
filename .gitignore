@@ -24,13 +24,21 @@ output_files/
 *.srec
 *.amp
 
-// for the mainframe folder, ignores all except .h, .c, .vhd, .v, .sv files
-mainframe/*
-!mainframe/*.h
-!mainframe/*.c
-!mainframe/*.vhd
-!mainframe/*.v
-!mainframe/*.sv
+// for the mainframe folder, ignores all except C and some HDL files
+mainframe/*.*
+mainframe/software/*.*
+mainframe/software/Debug
+mainframe/software/spl_bsp/
+!mainframe/software/*.h
+!mainframe/software/*.c
+mainframe/CPEN391_Computer/
+mainframe/UART_16550_Files/
+mainframe/VGA_CLOCK_GEN/
+mainframe/VGA_CLOCK_GEN_sim/
+mainframe/greybox_tmp/
+mainframe/hps_isw_handoff/
+mainframe/makefile
+mainframe/wlft33213e
 
 // for DE1_Pi_comm_test, ignore all except .c and .py files
 DE1_Pi_comm_test/*
