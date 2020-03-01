@@ -4,9 +4,9 @@
  * unit tests for critical functions under mainframe/
  */
 
-#include "../mainframe/gameLogic.h"
-#include "../mainframe/pi.h"
-#include "../mainframe/wifi.h"
+#include "../mainframe/software/gameLogic.h"
+#include "../mainframe/software/pi.h"
+#include "../mainframe/software/wifi.h"
 #include <stdio.h>
 
 /* player: A5A - 17
