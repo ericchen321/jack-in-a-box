@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,9 @@ public class MainActivity extends AppCompatActivity {
     private double totalToPay;
     private double tipTotal;
     private double totalPerPerson;
+
+
+
 
     private void extractAllInputs() {
         TextInputLayout textViewTotalBill = findViewById(R.id.entryTotalBill);
@@ -152,5 +156,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button cancelButton = findViewById((R.id.buttonCancel));
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openCancel_Activity();
+            }
+        });
+
+        Button finishButton = findViewById((R.id.buttonFinish));
+        finishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFinish_Activity();
+            }
+        });
+    }
+    public void openCancel_Activity() {
+        Intent intent = new Intent(this, Cancel_Activity.class);
+        startActivity(intent);
+    }
+
+    public void openFinish_Activity() {
+        Intent intent = new Intent(this, Finish_Activity.class);
+        startActivity(intent);
     }
 }
