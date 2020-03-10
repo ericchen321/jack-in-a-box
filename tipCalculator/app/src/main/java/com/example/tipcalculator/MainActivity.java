@@ -14,16 +14,16 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class MainActivity extends AppCompatActivity {
+    /* user inputs */
     private double totalBill;
     private int tipPercent;
     private int numPerson;
+    /*outputs */
     private double totalToPay;
     private double tipTotal;
     private double totalPerPerson;
 
-
-
-
+    /* extract user inputs (total bills, tip percent, etc.) */
     private void extractAllInputs() {
         TextInputLayout textViewTotalBill = findViewById(R.id.entryTotalBill);
         this.totalBill = Double.parseDouble(textViewTotalBill.getEditText().getText().toString());
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         // numPerson should have been updated
     }
 
+    /* calculate outputs based on user inputs */
     private void calculateAllOutputs() {
         this.tipTotal = this.totalBill * this.tipPercent / 100.0;
         this.totalToPay = this.totalBill + this.tipTotal;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         this.totalPerPerson = this.totalToPay / numPerson;
     }
 
+    /* display outputs in corresponding places */
     private void showAllOutputs() {
         TextView textViewTotalToPay = findViewById(R.id.textView6);
         textViewTotalToPay.setText(Double.toString(this.totalToPay));
